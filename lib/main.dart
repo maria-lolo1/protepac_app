@@ -20,6 +20,7 @@ class ProtepacApp extends StatelessWidget {
         '/login': (_) => LoginPage(),
         '/primeiro_login': (_) => PrimeiroLoginPage(),  // <- CORRETO
         '/esqueci_senha': (_) => EsqueciSenhaPage(),    // <- CORRETO
+        '/home': (_) => HomePage(),
         // outras rotas...
       },
     );

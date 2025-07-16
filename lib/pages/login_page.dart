@@ -103,7 +103,25 @@ class LoginPage extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    // Exemplo de login teste
+                    if (cpfController.text == '12345678900' && senhaController.text == '1234') {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } else {
+                      // Mostra alerta de erro (opcional)
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text('Erro'),
+                          content: Text('CPF ou senha inválidos!'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFFD700),
