@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:protepac/widgets/custom_bottom_nav_bar.dart';
+import 'package:protepac/widgets/bottom_navbar.dart';
 
 class MinhasManifestacoesPage extends StatefulWidget {
   @override
@@ -12,26 +12,46 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
     Manifestacao(
       tipo: 'Elogio',
       icon: Icons.thumb_up_alt_rounded,
-      texto: 'Atendimento excelente e rápido!',
+      texto: 'Equipe atenciosa, resolveram tudo com rapidez!',
       dataHora: DateTime(2025, 7, 16, 18, 33),
     ),
     Manifestacao(
       tipo: 'Reclamação',
       icon: Icons.thumb_down_alt_rounded,
-      texto: 'Demorou muito para resolver meu problema.',
+      texto: 'Fiquei aguardando retorno e não fui atendido.',
       dataHora: DateTime(2025, 7, 15, 9, 15),
     ),
     Manifestacao(
       tipo: 'Chamado técnico',
       icon: Icons.build_circle_rounded,
-      texto: 'Preciso de suporte para o alarme do escritório.',
+      texto: 'CFTV',
       dataHora: DateTime(2025, 7, 14, 14, 55),
     ),
     Manifestacao(
-      tipo: 'Avisos de segurança',
+      tipo: 'Aviso Segurança',
       icon: Icons.security_rounded,
-      texto: 'Parabéns pelas dicas de segurança enviadas!',
+      texto:
+          'Câmera - Câmera da frente apresentou alerta de movimento suspeito.',
       dataHora: DateTime(2025, 7, 13, 11, 25),
+    ),
+    Manifestacao(
+      tipo: 'Solic. Orçamento',
+      icon: Icons.request_page_rounded,
+      texto:
+          'Alarme - Gostaria de orçamento para ampliação do sistema de alarme.',
+      dataHora: DateTime(2025, 7, 12, 10, 12),
+    ),
+    Manifestacao(
+      tipo: 'Indicação Cliente',
+      icon: Icons.person_add_alt_1_rounded,
+      texto: 'Maria Silva Pereira - 51996756445\nCFTV - Comercial.',
+      dataHora: DateTime(2025, 7, 11, 13, 44),
+    ),
+    Manifestacao(
+      tipo: 'Sugestão',
+      icon: Icons.lightbulb_outline_rounded,
+      texto: 'Poderiam adicionar notificações por WhatsApp.',
+      dataHora: DateTime(2025, 7, 10, 15, 55),
     ),
   ];
 
@@ -40,6 +60,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // <-- ISSO REMOVE O ARROW BACK
         title: Text(
           'Minhas Manifestações',
           style: TextStyle(

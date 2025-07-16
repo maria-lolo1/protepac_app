@@ -13,7 +13,7 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60, // <-- MUDE AQUI a altura da barra como quiser!
+      height: 55, // <-- MUDE AQUI a altura da barra como quiser!
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -71,7 +71,7 @@ class CustomBottomNavBar extends StatelessWidget {
               size: 27,
               color: selected ? selectedColor : unselectedColor,
             ),
-            SizedBox(height: 2),
+            SizedBox(height: 1),
             Text(
               label,
               style: TextStyle(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:protepac/widgets/custom_bottom_nav_bar.dart';
+import 'package:protepac/widgets/bottom_navbar.dart';
 
 class PerfilPage extends StatelessWidget {
   final String cpf = '12345678901'; // Troque pelo CPF real
