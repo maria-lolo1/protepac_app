@@ -66,167 +66,192 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: azul),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 120, fit: BoxFit.contain),
-            const SizedBox(height: 32),
-
-            // Caixinhas personalizadas para Elogio e Reclamação
-            _OpcaoManifestacaoTile(
-              selecionado: tipoSelecionado == 'elogio',
-              onTap: () {
-                setState(() {
-                  tipoSelecionado = 'elogio';
-                  _controller.clear();
-                });
-              },
-              texto: 'Elogio',
-              azul: azul,
-              laranja: laranja,
-            ),
-            const SizedBox(height: 10),
-            _OpcaoManifestacaoTile(
-              selecionado: tipoSelecionado == 'reclamacao',
-              onTap: () {
-                setState(() {
-                  tipoSelecionado = 'reclamacao';
-                  _controller.clear();
-                });
-              },
-              texto: 'Reclamação',
-              azul: azul,
-              laranja: laranja,
-            ),
-
-            const SizedBox(height: 24),
-            // Título acima da caixa de mensagem (padrão das outras telas)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Escreva sua mensagem',
-                style: TextStyle(
-                  color: laranja,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.left,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            pinned: false,
+            floating: false,
+            expandedHeight: 70,
+            flexibleSpace: SafeArea(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: azul),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Stack(
-              children: [
-                TextField(
-                  controller: _controller,
-                  minLines: 5,
-                  maxLines: 16,
-                  maxLength: maxLength,
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  enabled: tipoSelecionado != null,
-                  style: TextStyle(color: azul, fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: TextStyle(color: Color(0xFF999999)),
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(color: laranja, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2.1,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
-                    counterText: '',
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                    fit: BoxFit.contain,
                   ),
-                  onChanged: (_) => setState(() {}),
-                ),
-                Positioned(
-                  bottom: 11,
-                  right: 17,
-                  child: Text(
-                    '${_controller.text.length}/$maxLength',
-                    style: TextStyle(fontSize: 12, color: azul),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Por gentileza, escreva seu elogio ou reclamação, que nossa equipe irá receber e analisar sua manifestação.',
+                    style: TextStyle(
+                      color: azul,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                if (_controller.text.isNotEmpty &&
-                    _controller.text.length < minLength)
-                  Positioned(
-                    bottom: 11,
-                    left: 16,
+                  const SizedBox(height: 24),
+                  _ManifestacaoRadioCheckTile(
+                    selecionado: tipoSelecionado == 'elogio',
+                    onTap: () {
+                      setState(() {
+                        tipoSelecionado = 'elogio';
+                        _controller.clear();
+                      });
+                    },
+                    texto: 'Elogio',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 16),
+                  _ManifestacaoRadioCheckTile(
+                    selecionado: tipoSelecionado == 'reclamacao',
+                    onTap: () {
+                      setState(() {
+                        tipoSelecionado = 'reclamacao';
+                        _controller.clear();
+                      });
+                    },
+                    texto: 'Reclamação',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
                     child: Text(
-                      'Mínimo $minLength caracteres',
+                      'Deixe sua mensagem para a Protepac',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: azul,
+                        color: laranja,
                         fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
+                      textAlign: TextAlign.left,
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: laranja,
-                      foregroundColor: azul,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        minLines: 5,
+                        maxLines: 16,
+                        maxLength: maxLength,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        enabled: tipoSelecionado != null,
+                        style: TextStyle(color: azul, fontSize: 16),
+                        decoration: InputDecoration(
+                          hintText: hint,
+                          hintStyle: TextStyle(color: Color(0xFF181883)),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(color: laranja, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2.1,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
+                          counterText: '',
+                        ),
+                        onChanged: (_) => setState(() {}),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
+                      Positioned(
+                        bottom: 11,
+                        right: 17,
+                        child: Text(
+                          '${_controller.text.length}/$maxLength',
+                          style: TextStyle(fontSize: 12, color: azul),
+                        ),
                       ),
-                      elevation: 0,
-                    ),
-                    onPressed: _formValido ? _enviar : null,
-                    child: const Text('Enviar'),
+                      if (_controller.text.isNotEmpty &&
+                          _controller.text.length < minLength)
+                        Positioned(
+                          bottom: 11,
+                          left: 16,
+                          child: Text(
+                            'Mínimo $minLength caracteres',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: azul,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: laranja,
+                            foregroundColor: azul,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: _formValido ? _enviar : null,
+                          child: const Text('Enviar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-            SizedBox(height: 12),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _OpcaoManifestacaoTile extends StatelessWidget {
+class _ManifestacaoRadioCheckTile extends StatelessWidget {
   final bool selecionado;
   final VoidCallback onTap;
   final String texto;
   final Color azul;
   final Color laranja;
 
-  const _OpcaoManifestacaoTile({
+  const _ManifestacaoRadioCheckTile({
     required this.selecionado,
     required this.onTap,
     required this.texto,
@@ -243,39 +268,44 @@ class _OpcaoManifestacaoTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          height: 52,
           decoration: BoxDecoration(
             border: Border.all(
-              color: selecionado ? laranja : laranja.withOpacity(0.5),
-              width: selecionado ? 2.5 : 1.7,
+              color: laranja, // Sempre amarela
+              width: 2, // Fino igual ao exemplo 2
             ),
-            borderRadius: BorderRadius.circular(12),
-            color: selecionado ? laranja.withOpacity(0.10) : Colors.white,
+            borderRadius: BorderRadius.circular(8), // Cantos menos arredondados
+            color: Colors.white,
           ),
           child: Row(
             children: [
+              SizedBox(width: 15),
               Container(
-                width: 23,
-                height: 23,
+                width: 22,
+                height: 22,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: selecionado ? laranja : Colors.grey[400]!,
-                    width: selecionado ? 2.2 : 1.4,
+                    color: selecionado
+                        ? laranja
+                        : Color(
+                            0xFF47465A,
+                          ), // cinza escuro só na caixinha // Sempre amarela
+                    width: 2,
                   ),
+                  borderRadius: BorderRadius.circular(2),
                   color: selecionado ? laranja : Colors.white,
-                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: selecionado
-                    ? Icon(Icons.check, size: 18, color: azul)
+                    ? Icon(Icons.check, color: azul, size: 18)
                     : null,
               ),
-              SizedBox(width: 12),
+              SizedBox(width: 15),
               Text(
                 texto,
                 style: TextStyle(
                   color: azul,
                   fontWeight: FontWeight.bold,
-                  fontSize: 17,
+                  fontSize: 18,
                 ),
               ),
             ],

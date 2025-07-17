@@ -7,22 +7,22 @@ class HomePage extends StatelessWidget {
   // Nova lista de botões na ordem solicitada
   final List<_MenuButton> buttons = [
     _MenuButton(
-      'Abertura de chamados técnicos',
+      'Abertura de Chamados Técnicos',
       Icons.build_circle_rounded,
       '/novo_chamado_tecnico',
     ),
     _MenuButton(
-      'Avisos de segurança',
+      'Avisos de Segurança',
       Icons.security_rounded,
       '/novo_aviso_seguranca',
     ),
     _MenuButton(
-      'Indicação de novo cliente',
+      'Indicação de Novo Cliente',
       Icons.person_add_alt_1,
       '/nova_indicacao_cliente',
     ),
     _MenuButton(
-      'Solicitação orçamento',
+      'Solicitação de Orçamento',
       Icons.request_page_rounded,
       '/nova_solicitacao_orcamento',
     ),
@@ -36,62 +36,61 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Pega largura da tela
     final screenWidth = MediaQuery.of(context).size.width;
-    // Pega altura da tela
-    final screenHeight = MediaQuery.of(context).size.height;
-    // Ajusta tamanho do grid e fonte dependendo da largura da tela
     final crossAxisCount = 2;
     final isSmallDevice = screenWidth < 350;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          children: [
-            SizedBox(height: 30),
-            Image.asset('assets/logo.png', height: 90),
-            const SizedBox(height: 8),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  // Adapta aspect ratio para caber textos longos sem overflow
-                  double aspectRatio = 1.35;
-                  if (constraints.maxWidth < 350) {
-                    aspectRatio = 1.1;
-                  } else if (constraints.maxWidth < 410) {
-                    aspectRatio = 1.2;
-                  }
-                  return GridView.builder(
-                    padding: const EdgeInsets.only(bottom: 18, top: 8),
-                    itemCount: buttons.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: aspectRatio,
-                    ),
-                    itemBuilder: (context, index) {
-                      final b = buttons[index];
-                      return _MenuCard(
-                        title: b.title,
-                        icon: b.icon,
-                        onTap: () {
-                          Navigator.pushNamed(context, b.route);
-                        },
-                        isSmall: isSmallDevice,
-                      );
-                    },
-                  );
-                },
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 32, left: 32, right: 32),
+              child: Column(
+                children: [
+                  SizedBox(height: 12),
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 30),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final b = buttons[index];
+                return _MenuCard(
+                  title: b.title,
+                  icon: b.icon,
+                  onTap: () {
+                    Navigator.pushNamed(context, b.route);
+                  },
+                  isSmall: isSmallDevice,
+                );
+              }, childCount: buttons.length),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
+                childAspectRatio: screenWidth < 350
+                    ? 1.1
+                    : screenWidth < 410
+                    ? 1.2
+                    : 1.35,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: 18)),
+        ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 0, // 0 = Home
+        selectedIndex: 0,
         onTap: (index) {
           if (index == 0) {
             Navigator.pushReplacementNamed(context, '/home');

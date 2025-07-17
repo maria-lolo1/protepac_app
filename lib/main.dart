@@ -11,7 +11,9 @@ import 'pages/novo_aviso_seguranca.dart';
 import 'pages/novo_chamado_tecnico.dart';
 import 'pages/novo_elogio_reclamacao.dart';
 import 'pages/perfil.dart';
+import 'pages/perfil_geral.dart'; // <-- Adiciona esta linha!
 import 'pages/primeiro_login.dart';
+import 'pages/manifestacoes_geral.dart';
 
 void main() => runApp(ProtepacApp());
 
@@ -36,6 +38,8 @@ class ProtepacApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => MinhasManifestacoesPage());
           case '/perfil':
             return MaterialPageRoute(builder: (_) => PerfilPage());
+          case '/perfil_geral':
+            return MaterialPageRoute(builder: (_) => PerfilGeralPage());
           case '/nova_indicacao_cliente':
             return MaterialPageRoute(
               builder: (_) => NovaIndicacaoClientePage(),
@@ -54,6 +58,8 @@ class ProtepacApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => NovoElogioReclamacaoPage(),
             );
+          case '/manifestacoes_geral':
+            return MaterialPageRoute(builder: (_) => ManifestacoesGeralPage());
           default:
             return MaterialPageRoute(builder: (_) => LoginPage());
         }
@@ -65,12 +71,14 @@ class ProtepacApp extends StatelessWidget {
         '/home': (_) => HomePage(),
         '/minhas_manifestacoes': (_) => MinhasManifestacoesPage(),
         '/perfil': (_) => PerfilPage(),
+        '/perfil_geral': (_) => PerfilGeralPage(), // <-- Adiciona aqui também!
         '/nova_indicacao_cliente': (_) => NovaIndicacaoClientePage(),
         '/nova_solicitacao_orcamento': (_) => NovaSolicitacaoOrcamentoPage(),
         '/nova_sugestao': (_) => NovaSugestaoPage(),
         '/novo_aviso_seguranca': (_) => NovoAvisoSegurancaPage(),
         '/novo_chamado_tecnico': (_) => NovoChamadoTecnicoPage(),
         '/novo_elogio_reclamacao': (_) => NovoElogioReclamacaoPage(),
+        '/manifestacoes_geral': (_) => ManifestacoesGeralPage(),
       },
     );
   }

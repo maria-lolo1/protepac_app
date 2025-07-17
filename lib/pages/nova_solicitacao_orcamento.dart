@@ -20,9 +20,15 @@ class _NovaSolicitacaoOrcamentoPageState
   static const int maxLength = 500;
   static const int minLength = 5;
 
+  // Getter para habilitar o botão
+  bool get formValido {
+    final textoOk = _controller.text.trim().length >= minLength;
+    final marcado = ampliacaoCameras || ampliacaoAlarme;
+    return textoOk && marcado;
+  }
+
   void _enviar() {
-    if ((!ampliacaoCameras && !ampliacaoAlarme) ||
-        _controller.text.trim().length < minLength) {
+    if (!formValido) {
       showDialog(
         context: context,
         builder: (_) => ModalMensagemPosEnvio(
@@ -57,155 +63,171 @@ class _NovaSolicitacaoOrcamentoPageState
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: azul),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 120, fit: BoxFit.contain),
-            const SizedBox(height: 24),
-            Text(
-              'Orçamentos',
-              style: TextStyle(
-                color: azul,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            _CheckBoxTile(
-              value: ampliacaoCameras,
-              onChanged: (val) => setState(() => ampliacaoCameras = val!),
-              text: 'Ampliação de Câmeras',
-              azul: azul,
-              laranja: laranja,
-            ),
-            const SizedBox(height: 14),
-            _CheckBoxTile(
-              value: ampliacaoAlarme,
-              onChanged: (val) => setState(() => ampliacaoAlarme = val!),
-              text: 'Ampliação do Alarme',
-              azul: azul,
-              laranja: laranja,
-            ),
-            const SizedBox(height: 28),
-            Padding(
-              padding: const EdgeInsets.only(left: 4, bottom: 6),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Por gentileza, especifique sua necessidade',
-                  style: TextStyle(
-                    color: laranja,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            pinned: false,
+            floating: false,
+            expandedHeight: 70,
+            flexibleSpace: SafeArea(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: azul),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  textAlign: TextAlign.left,
-                ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Stack(
-              children: [
-                TextField(
-                  controller: _controller,
-                  minLines: 5,
-                  maxLines: 16,
-                  maxLength: maxLength,
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  style: TextStyle(color: azul, fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText:
-                        'Ex: Gostaria de botar +2 câmeras no meu sistema...',
-                    hintStyle: TextStyle(color: Color(0xFF999999)),
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(color: laranja, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2.1,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
-                    counterText: '',
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                    fit: BoxFit.contain,
                   ),
-                  onChanged: (_) => setState(() {}),
-                ),
-                // Contador caracteres no canto inferior direito DENTRO da caixa
-                Positioned(
-                  bottom: 11,
-                  right: 17,
-                  child: Text(
-                    '${_controller.text.length}/$maxLength',
-                    style: TextStyle(fontSize: 12, color: azul),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Por gentileza, especifique sua necessidade de orçamento, que nossa equipe entrará em contato.',
+                    style: TextStyle(
+                      color: azul,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                // Mínimo de caracteres avisar
-                if (_controller.text.isNotEmpty &&
-                    _controller.text.length < minLength)
-                  Positioned(
-                    bottom: 11,
-                    left: 16,
-                    child: Text(
-                      'Mínimo $minLength caracteres',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: azul,
-                        fontWeight: FontWeight.bold,
+                  const SizedBox(height: 24),
+                  _CheckBoxTile(
+                    value: ampliacaoCameras,
+                    onChanged: (val) => setState(() => ampliacaoCameras = val!),
+                    text: 'Ampliação de Câmeras',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 16),
+                  _CheckBoxTile(
+                    value: ampliacaoAlarme,
+                    onChanged: (val) => setState(() => ampliacaoAlarme = val!),
+                    text: 'Ampliação do Alarme',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 6),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Descreva sua necessidade de Orçamento',
+                        style: TextStyle(
+                          color: laranja,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
                     ),
                   ),
-              ],
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        minLines: 5,
+                        maxLines: 16,
+                        maxLength: maxLength,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(color: azul, fontSize: 16),
+                        decoration: InputDecoration(
+                          hintText: 'Digite aqui...',
+                          hintStyle: TextStyle(color: Color(0xFF181883)),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(color: laranja, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2.1,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
+                          counterText: '',
+                        ),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                      Positioned(
+                        bottom: 11,
+                        right: 17,
+                        child: Text(
+                          '${_controller.text.length}/$maxLength',
+                          style: TextStyle(fontSize: 12, color: azul),
+                        ),
+                      ),
+                      if (_controller.text.isNotEmpty &&
+                          _controller.text.length < minLength)
+                        Positioned(
+                          bottom: 11,
+                          left: 16,
+                          child: Text(
+                            'Mínimo $minLength caracteres',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: azul,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: laranja,
+                            foregroundColor: azul,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: formValido ? _enviar : null,
+                          child: const Text('Enviar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: laranja,
-                      foregroundColor: azul,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: _enviar,
-                    child: const Text('Enviar'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -243,7 +265,7 @@ class _CheckBoxTile extends StatelessWidget {
           style: TextStyle(
             color: azul,
             fontWeight: FontWeight.bold,
-            fontSize: 17,
+            fontSize: 18,
           ),
         ),
         activeColor: laranja,

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:protepac/widgets/bottom_navbar.dart';
+import 'package:flutter/services.dart';
+import 'package:protepac/widgets/bottom_navbar_geral.dart';
 
-class MinhasManifestacoesPage extends StatefulWidget {
+// Para navegação: Navigator.pushNamed(context, '/manifestacoes_geral', arguments: {'role': 'adm'});
+// Ou: {'role': 'funcionario'}
+
+class ManifestacoesGeralPage extends StatefulWidget {
   @override
-  State<MinhasManifestacoesPage> createState() =>
-      _MinhasManifestacoesPageState();
+  State<ManifestacoesGeralPage> createState() => _ManifestacoesGeralPageState();
 }
 
-class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
+class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
   List<Manifestacao> manifestacoes = [
     Manifestacao(
       tipo: 'Elogio',
@@ -15,6 +18,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       texto: 'Equipe atenciosa, resolveram tudo com rapidez!',
       dataHora: DateTime(2025, 7, 16, 18, 33),
       visto: false,
+      email: 'teste1@email.com',
     ),
     Manifestacao(
       tipo: 'Reclamação',
@@ -22,6 +26,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       texto: 'Fiquei aguardando retorno e não fui atendido.',
       dataHora: DateTime(2025, 7, 15, 9, 15),
       visto: false,
+      email: 'teste2@email.com',
     ),
     Manifestacao(
       tipo: 'Chamado técnico',
@@ -29,6 +34,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       texto: 'CFTV - Imagens da câmera frontal estão fora do ar.',
       dataHora: DateTime(2025, 7, 14, 14, 55),
       visto: true,
+      email: 'teste3@email.com',
     ),
     Manifestacao(
       tipo: 'Aviso Segurança',
@@ -37,6 +43,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
           'Câmera - Câmera da frente apresentou alerta de movimento suspeito.',
       dataHora: DateTime(2025, 7, 13, 11, 25),
       visto: true,
+      email: 'teste4@email.com',
     ),
     Manifestacao(
       tipo: 'Solic. Orçamento',
@@ -45,22 +52,38 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
           'Alarme - Gostaria de orçamento para ampliação do sistema de alarme.',
       dataHora: DateTime(2025, 7, 12, 10, 12),
       visto: true,
+      email: 'teste5@email.com',
     ),
     Manifestacao(
       tipo: 'Indicação Cliente',
       icon: Icons.person_add_alt_1_rounded,
       texto: 'Maria Silva Pereira - 51996756445\nCFTV - Comercial.',
       dataHora: DateTime(2025, 7, 11, 13, 44),
-      visto: true,
+      visto: false,
+      email: 'teste6@email.com',
     ),
     Manifestacao(
       tipo: 'Sugestão',
       icon: Icons.lightbulb_outline_rounded,
       texto: 'Poderiam adicionar notificações por WhatsApp.',
       dataHora: DateTime(2025, 7, 10, 15, 55),
-      visto: true, // 7º só para não quebrar nada, pode remover se quiser
+      visto: true,
+      email: 'teste7@email.com',
     ),
   ];
+
+  String _role = "usuario"; // padrão
+  bool get isAdm => _role == "adm";
+  bool get isFuncionario => _role == "funcionario";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (args != null && args['role'] != null) {
+      _role = args['role'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +101,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                 children: [
                   SizedBox(height: 8),
                   Text(
-                    'Minhas Manifestações',
+                    'Manifestações dos Usuários',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,
@@ -138,7 +161,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 12),
                       Text(
                         m.texto,
                         style: TextStyle(color: laranja, fontSize: 15),
@@ -146,54 +169,108 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                       SizedBox(height: 12),
                       Row(
                         children: [
-                          // Editar (menor)
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              _editarManifestacao(context, index, m);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.grey[800],
-                              side: BorderSide(color: Colors.grey, width: 1.2),
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 16,
-                              ),
-                              minimumSize: Size(0, 32),
-                            ),
-                            icon: Icon(Icons.edit, size: 16),
-                            label: Text("Editar"),
-                          ),
-                          SizedBox(width: 12),
-                          // Excluir (menor)
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              _confirmarExclusao(context, index);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.red[700],
-                              side: BorderSide(color: Colors.red, width: 1.2),
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 16,
-                              ),
-                              minimumSize: Size(0, 32),
-                            ),
-                            icon: Icon(Icons.delete_forever, size: 17),
-                            label: Text("Excluir"),
-                          ),
-                          SizedBox(width: 12),
-                          // Pendende/Visto círculo
+                          // EDITAR (ADM apenas)
                           Container(
-                            width: 49,
-                            height: 49,
+                            width: 55,
+                            height: 50,
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: isAdm ? Colors.grey : Colors.grey[300]!,
+                                width: 2,
+                              ),
+                            ),
+                            child: IconButton(
+                              onPressed: isAdm
+                                  ? () => _editarManifestacao(context, index, m)
+                                  : null,
+                              icon: Icon(
+                                Icons.edit,
+                                color: isAdm
+                                    ? Colors.grey[800]
+                                    : Colors.grey[300],
+                                size: 30,
+                              ),
+                              tooltip: 'Editar',
+                              splashRadius: 26,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // EXCLUIR (ADM apenas)
+                          Container(
+                            width: 55,
+                            height: 50,
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: isAdm
+                                    ? Colors.red[700]!
+                                    : Colors.grey[300]!,
+                                width: 2,
+                              ),
+                            ),
+                            child: IconButton(
+                              onPressed: isAdm
+                                  ? () => _confirmarExclusao(context, index)
+                                  : null,
+                              icon: Icon(
+                                Icons.delete_forever,
+                                color: isAdm
+                                    ? Colors.red[700]
+                                    : Colors.grey[300],
+                                size: 30,
+                              ),
+                              tooltip: 'Excluir',
+                              splashRadius: 26,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // GMAIL (ADM/FUNCIONARIO, copia email)
+                          Container(
+                            width: 55,
+                            height: 50,
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.orange[800]!,
+                                width: 2,
+                              ),
+                            ),
+                            child: IconButton(
+                              onPressed: m.email.isNotEmpty
+                                  ? () {
+                                      Clipboard.setData(
+                                        ClipboardData(text: m.email),
+                                      );
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Email copiado!'),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              icon: Icon(
+                                Icons.mail_outline,
+                                color: Colors.orange[800],
+                                size: 30,
+                              ),
+                              tooltip: 'Copiar email do usuário',
+                              splashRadius: 26,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // STATUS (visto/pendente)
+                          Container(
+                            width: 55,
+                            height: 50,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
@@ -204,8 +281,18 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                                 width: 2.2,
                               ),
                             ),
-                            child: Center(
-                              child: Icon(
+                            child: IconButton(
+                              onPressed: (isAdm || isFuncionario)
+                                  ? () {
+                                      setState(() {
+                                        manifestacoes[index] =
+                                            manifestacoes[index].copyWith(
+                                              visto: !m.visto,
+                                            );
+                                      });
+                                    }
+                                  : null,
+                              icon: Icon(
                                 m.visto
                                     ? Icons.check_circle
                                     : Icons.hourglass_bottom,
@@ -214,6 +301,8 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                                     : Color(0xFFFF9900),
                                 size: 30,
                               ),
+                              tooltip: m.visto ? 'Visto' : 'Pendente',
+                              splashRadius: 26,
                             ),
                           ),
                         ],
@@ -227,15 +316,54 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
           SliverToBoxAdapter(child: SizedBox(height: 26)),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 1,
+      bottomNavigationBar: CustomBottomNavBarGeral(
+        selectedIndex: 0,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/home');
-          } else if (index == 2) {
-            Navigator.pushReplacementNamed(context, '/perfil');
+            Navigator.pushReplacementNamed(context, '/manifestacoes_geral');
+          } else if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/login');
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildMiniButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color borderColor,
+    required VoidCallback? onTap,
+    bool enabled = true,
+    double iconSize =
+        30, // <-- Adicione esse parâmetro com valor igual ao status!
+  }) {
+    final Color effectiveColor = enabled ? color : Colors.grey[400]!;
+    final Color effectiveBorder = enabled ? borderColor : Colors.grey[300]!;
+
+    return OutlinedButton.icon(
+      onPressed: enabled ? onTap : null,
+      icon: Icon(icon, size: iconSize, color: effectiveColor), // aqui!
+      label: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: effectiveColor,
+        ),
+      ),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: effectiveColor,
+        side: BorderSide(color: effectiveBorder, width: 1.2),
+        textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        minimumSize: Size(0, 32),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Colors.white,
+        disabledForegroundColor: Colors.grey[400],
+        disabledBackgroundColor: Colors.white,
       ),
     );
   }
@@ -367,6 +495,7 @@ class Manifestacao {
   final String texto;
   final DateTime dataHora;
   final bool visto;
+  final String email; // novo campo
 
   Manifestacao({
     required this.tipo,
@@ -374,6 +503,7 @@ class Manifestacao {
     required this.texto,
     required this.dataHora,
     required this.visto,
+    required this.email, // novo campo
   });
 
   Manifestacao copyWith({
@@ -382,13 +512,23 @@ class Manifestacao {
     String? texto,
     DateTime? dataHora,
     bool? visto,
+    String? email,
   }) {
     return Manifestacao(
       tipo: tipo ?? this.tipo,
       icon: icon ?? this.icon,
       texto: texto ?? this.texto,
       dataHora: dataHora ?? this.dataHora,
-      visto: visto ?? this.visto, // nunca será null se usado certo
+      visto: visto ?? this.visto,
+      email: email ?? this.email,
     );
   }
+}
+
+class BottomNavItem {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  BottomNavItem({required this.icon, required this.label, required this.onTap});
 }

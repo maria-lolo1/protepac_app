@@ -1,25 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:protepac/widgets/bottom_navbar.dart';
+import 'package:protepac/widgets/bottom_navbar_geral.dart'; // Certifique-se que esse arquivo existe
 
-class PerfilPage extends StatefulWidget {
-  @override
-  _PerfilPageState createState() => _PerfilPageState();
-}
+class PerfilGeralPage extends StatelessWidget {
+  final String cpf =
+      '12345679000'; // Fictício, troque pelo CPF real se necessário
+  final String senha =
+      '123456'; // Fictício, troque pela senha real se necessário
 
-class _PerfilPageState extends State<PerfilPage> {
-  final String cpf = '12345678901'; // Troque pelo CPF real
-  final String senha = '123456'; // Troque pela senha real
-  String email = 'usuario@email.com'; // Troque pelo email real
-
-  final TextEditingController emailController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    emailController.text = email;
-  }
-
-  // Mascara CPF: ***.***.789-01
   String _maskCpf(String cpf) {
     if (cpf.length != 11) return cpf;
     return '***.***.${cpf.substring(6, 9)}-${cpf.substring(9)}';
@@ -40,13 +27,13 @@ class _PerfilPageState extends State<PerfilPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 24),
+                  SizedBox(height: 20),
                   Image.asset(
                     'assets/logo.png',
                     height: 120,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
                   Text(
                     'Meu Perfil',
                     style: TextStyle(
@@ -56,7 +43,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -72,7 +59,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Color(0xFFFFD700), width: 2),
@@ -104,7 +91,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: EdgeInsets.only(bottom: 35),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Color(0xFFFFD700), width: 2),
@@ -121,75 +108,6 @@ class _PerfilPageState extends State<PerfilPage> {
                       textAlign: TextAlign.left,
                     ),
                   ),
-                  // Campo Email
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'E-mail',
-                      style: TextStyle(
-                        color: laranja,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(color: azul, fontSize: 17),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: Color(0xFFFFD700),
-                          width: 2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: Color(0xFFFFD700),
-                          width: 2.2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 42,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: laranja,
-                        foregroundColor: azul,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          email = emailController.text;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Email atualizado!')),
-                        );
-                      },
-                      child: Text('Salvar Alteração do Email'),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     height: 46,
@@ -221,13 +139,11 @@ class _PerfilPageState extends State<PerfilPage> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2,
+      bottomNavigationBar: CustomBottomNavBarGeral(
+        selectedIndex: 1,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/home');
-          } else if (index == 1) {
-            Navigator.pushReplacementNamed(context, '/minhas_manifestacoes');
+            Navigator.pushReplacementNamed(context, '/manifestacoes_geral');
           }
         },
       ),

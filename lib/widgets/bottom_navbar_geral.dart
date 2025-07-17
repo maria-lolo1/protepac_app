@@ -1,10 +1,11 @@
+// custom_bottom_navbar_geral.dart
 import 'package:flutter/material.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBarGeral extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
 
-  const CustomBottomNavBar({
+  const CustomBottomNavBarGeral({
     Key? key,
     required this.selectedIndex,
     required this.onTap,
@@ -13,7 +14,7 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50, // <-- MUDE AQUI a altura da barra como quiser!
+      height: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -25,25 +26,26 @@ class CustomBottomNavBar extends StatelessWidget {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavItem(
-            icon: Icons.home_rounded,
-            label: 'Home',
-            selected: selectedIndex == 0,
-            onTap: () => onTap(0),
+          SizedBox(
+            width: 140, // ajuste para caber "Manifestações"
+            child: _buildNavItem(
+              icon: Icons.list_alt_rounded,
+              label: 'Manifestações',
+              selected: selectedIndex == 0,
+              onTap: () => onTap(0),
+            ),
           ),
-          _buildNavItem(
-            icon: Icons.list_alt_rounded,
-            label: 'Manifestações',
-            selected: selectedIndex == 1,
-            onTap: () => onTap(1),
-          ),
-          _buildNavItem(
-            icon: Icons.person_rounded,
-            label: 'Perfil',
-            selected: selectedIndex == 2,
-            onTap: () => onTap(2),
+          SizedBox(width: 24),
+          SizedBox(
+            width: 140, // mesmo valor
+            child: _buildNavItem(
+              icon: Icons.logout,
+              label: 'Sair',
+              selected: selectedIndex == 1,
+              onTap: () => onTap(1),
+            ),
           ),
         ],
       ),

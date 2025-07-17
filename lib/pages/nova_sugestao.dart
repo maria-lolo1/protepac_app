@@ -49,135 +49,154 @@ class _NovaSugestaoPageState extends State<NovaSugestaoPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: azul),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 120, fit: BoxFit.contain),
-            const SizedBox(height: 24),
-            Text(
-              'Sugestão',
-              style: TextStyle(
-                color: azul,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Deixe a sua sugestão para a Protepac',
-                style: TextStyle(
-                  color: laranja,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.left,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            pinned: false,
+            floating: false,
+            expandedHeight: 70,
+            flexibleSpace: SafeArea(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: azul),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Stack(
-              children: [
-                TextField(
-                  controller: _controller,
-                  minLines: 5,
-                  maxLines: 16,
-                  maxLength: maxLength,
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  style: TextStyle(color: azul, fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: 'Digite aqui...',
-                    hintStyle: TextStyle(color: Color(0xFF999999)),
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(color: laranja, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide: BorderSide(
-                        color: Color(0xFFFFD700),
-                        width: 2.1,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
-                    counterText: '',
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                    fit: BoxFit.contain,
                   ),
-                  onChanged: (_) => setState(() {}),
-                ),
-                Positioned(
-                  bottom: 11,
-                  right: 17,
-                  child: Text(
-                    '${_controller.text.length}/$maxLength',
-                    style: TextStyle(fontSize: 12, color: azul),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Por gentileza, escreva sua sugestão, que será avaliada pela nossa equipe.',
+                    style: TextStyle(
+                      color: azul,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                if (_controller.text.isNotEmpty &&
-                    _controller.text.length < minLength)
-                  Positioned(
-                    bottom: 11,
-                    left: 16,
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
                     child: Text(
-                      'Mínimo $minLength caracteres',
+                      'Deixe sua sugestão para a Protepac',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: azul,
+                        color: laranja,
                         fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
+                      textAlign: TextAlign.left,
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: laranja,
-                      foregroundColor: azul,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        minLines: 5,
+                        maxLines: 16,
+                        maxLength: maxLength,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(color: azul, fontSize: 16),
+                        decoration: InputDecoration(
+                          hintText: 'Digite aqui...',
+                          hintStyle: TextStyle(color: Color(0xFF181883)),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(color: laranja, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2.1,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
+                          counterText: '',
+                        ),
+                        onChanged: (_) => setState(() {}),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
+                      Positioned(
+                        bottom: 11,
+                        right: 17,
+                        child: Text(
+                          '${_controller.text.length}/$maxLength',
+                          style: TextStyle(fontSize: 12, color: azul),
+                        ),
                       ),
-                      elevation: 0,
-                    ),
-                    onPressed: _controller.text.trim().length >= minLength
-                        ? _enviar
-                        : null,
-                    child: const Text('Enviar'),
+                      if (_controller.text.isNotEmpty &&
+                          _controller.text.length < minLength)
+                        Positioned(
+                          bottom: 11,
+                          left: 16,
+                          child: Text(
+                            'Mínimo $minLength caracteres',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: azul,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: laranja,
+                            foregroundColor: azul,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: _controller.text.trim().length >= minLength
+                              ? _enviar
+                              : null,
+                          child: const Text('Enviar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-            SizedBox(height: 12),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

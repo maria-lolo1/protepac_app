@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../widgets/modal_mensagem_pos_envio.dart';
+import 'package:flutter/services.dart';
 
 class NovoChamadoTecnicoPage extends StatefulWidget {
   const NovoChamadoTecnicoPage({Key? key}) : super(key: key);
@@ -14,9 +15,16 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
   bool cftv = false;
   bool alarme = false;
   bool enviando = false;
+  final TextEditingController _controller = TextEditingController();
+
+  static const int maxLength = 500;
+  static const int minLength = 5;
+
+  bool get _formValido =>
+      (cftv || alarme) && _controller.text.trim().length >= minLength;
 
   void _enviar() {
-    if (!cftv && !alarme) {
+    if (!_formValido) {
       showGeneralDialog(
         context: context,
         barrierDismissible: true,
@@ -60,7 +68,6 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
                 tipo: MensagemPosEnvioTipo.sucesso,
                 onVerManif: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  // Aqui já está seguro navegar direto
                   Navigator.of(
                     context,
                   ).pushReplacementNamed('/minhas_manifestacoes');
@@ -82,74 +89,177 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: azul),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 120, fit: BoxFit.contain),
-            const SizedBox(height: 24),
-            Text(
-              'Por gentileza especifique sua necessidade que a nossa equipe entrará em contato',
-              style: TextStyle(
-                color: azul,
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 25),
-            _CheckBoxTile(
-              value: cftv,
-              onChanged: (val) => setState(() => cftv = val!),
-              text: 'CFTV',
-              azul: azul,
-              laranja: laranja,
-            ),
-            const SizedBox(height: 20),
-            _CheckBoxTile(
-              value: alarme,
-              onChanged: (val) => setState(() => alarme = val!),
-              text: 'Alarme',
-              azul: azul,
-              laranja: laranja,
-            ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: laranja,
-                      foregroundColor: azul,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: _enviar, // só chama sua função simples
-                    child: const Text('Enviar'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false, // removemos o padrão
+            backgroundColor: Colors.white,
+            elevation: 0,
+            pinned: false, // não fixa, rola junto
+            floating: false,
+            snap: false,
+            expandedHeight: 70,
+            flexibleSpace: SafeArea(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: azul),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                ),
-              ],
+                  Text(
+                    '', // Deixe vazio se não quer título na barra
+                    style: TextStyle(
+                      color: azul,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 12),
-          ],
-        ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Por gentileza, especifique sua necessidade de chamado técnico, que nossa equipe entrará em contato.',
+                    style: TextStyle(
+                      color: azul,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  _CheckBoxTile(
+                    value: cftv,
+                    onChanged: (val) => setState(() => cftv = val!),
+                    text: 'CFTV',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 16),
+                  _CheckBoxTile(
+                    value: alarme,
+                    onChanged: (val) => setState(() => alarme = val!),
+                    text: 'Alarme',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Descreva seu Chamado Técnico',
+                      style: TextStyle(
+                        color: laranja,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        minLines: 5,
+                        maxLines: 16,
+                        maxLength: maxLength,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        style: TextStyle(color: azul, fontSize: 16),
+                        decoration: InputDecoration(
+                          hintText: 'Digite aqui...',
+                          hintStyle: TextStyle(color: Color(0xFF181883)),
+                          fillColor: Colors.white,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(color: laranja, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Color(0xFFFFD700),
+                              width: 2.1,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 45),
+                          counterText: '',
+                        ),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                      Positioned(
+                        bottom: 11,
+                        right: 17,
+                        child: Text(
+                          '${_controller.text.length}/$maxLength',
+                          style: TextStyle(fontSize: 12, color: azul),
+                        ),
+                      ),
+                      if (_controller.text.isNotEmpty &&
+                          _controller.text.length < minLength)
+                        Positioned(
+                          bottom: 11,
+                          left: 16,
+                          child: Text(
+                            'Mínimo $minLength caracteres',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: azul,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: laranja,
+                            foregroundColor: azul,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: _formValido ? _enviar : null,
+                          child: const Text('Enviar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -186,7 +296,7 @@ class _CheckBoxTile extends StatelessWidget {
           style: TextStyle(
             color: azul,
             fontWeight: FontWeight.bold,
-            fontSize: 17,
+            fontSize: 18,
           ),
         ),
         activeColor: laranja,
