@@ -13,6 +13,8 @@ class ManifestacoesGeralPage extends StatefulWidget {
 class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
   List<Manifestacao> manifestacoes = [
     Manifestacao(
+      nome: 'Carlos Alberto',
+      cpf: '023.754.753-40',
       tipo: 'Elogio',
       icon: Icons.thumb_up_alt_rounded,
       texto: 'Equipe atenciosa, resolveram tudo com rapidez!',
@@ -21,6 +23,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste1@email.com',
     ),
     Manifestacao(
+      nome: 'César Pereira',
+      cpf: '013.154.053-40',
       tipo: 'Reclamação',
       icon: Icons.thumb_down_alt_rounded,
       texto: 'Fiquei aguardando retorno e não fui atendido.',
@@ -29,6 +33,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste2@email.com',
     ),
     Manifestacao(
+      nome: 'Mauro Júnior',
+      cpf: '020.984.143-00',
       tipo: 'Chamado técnico',
       icon: Icons.build_circle_rounded,
       texto: 'CFTV - Imagens da câmera frontal estão fora do ar.',
@@ -37,6 +43,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste3@email.com',
     ),
     Manifestacao(
+      nome: 'Adriano Silva',
+      cpf: '763.012.553-40',
       tipo: 'Aviso Segurança',
       icon: Icons.security_rounded,
       texto:
@@ -46,6 +54,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste4@email.com',
     ),
     Manifestacao(
+      nome: 'Paulo Roberto',
+      cpf: '090.954.123-75',
       tipo: 'Solic. Orçamento',
       icon: Icons.request_page_rounded,
       texto:
@@ -55,6 +65,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste5@email.com',
     ),
     Manifestacao(
+      nome: 'Marlene dos Santos',
+      cpf: '013.154.753-70',
       tipo: 'Indicação Cliente',
       icon: Icons.person_add_alt_1_rounded,
       texto: 'Maria Silva Pereira - 51996756445\nCFTV - Comercial.',
@@ -63,6 +75,8 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
       email: 'teste6@email.com',
     ),
     Manifestacao(
+      nome: 'Alexandre Silva',
+      cpf: '058.654.873-10',
       tipo: 'Sugestão',
       icon: Icons.lightbulb_outline_rounded,
       texto: 'Poderiam adicionar notificações por WhatsApp.',
@@ -122,6 +136,9 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
               itemBuilder: (context, index) {
                 final m = manifestacoes[index];
                 return Container(
+                  constraints: BoxConstraints(
+                    minHeight: 165,
+                  ), // aumentei altura
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Color(0xFFFFD700), width: 2),
@@ -138,6 +155,39 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Linha nome + cpf (acima do tipo)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: azul,
+                            size: 28,
+                          ), // Ícone à esquerda
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              m.nome,
+                              style: TextStyle(
+                                color: azul,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 19,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            m.cpf,
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 6),
+                      // Linha tipo + data/hora
                       Row(
                         children: [
                           Icon(m.icon, color: azul),
@@ -155,18 +205,18 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
                             _formatDataHora(m.dataHora),
                             style: TextStyle(
                               color: laranja,
-                              fontSize: 13,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 10),
                       Text(
                         m.texto,
                         style: TextStyle(color: laranja, fontSize: 15),
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 10),
                       Row(
                         children: [
                           // EDITAR (ADM apenas)
@@ -329,45 +379,6 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
     );
   }
 
-  Widget _buildMiniButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required Color borderColor,
-    required VoidCallback? onTap,
-    bool enabled = true,
-    double iconSize =
-        30, // <-- Adicione esse parâmetro com valor igual ao status!
-  }) {
-    final Color effectiveColor = enabled ? color : Colors.grey[400]!;
-    final Color effectiveBorder = enabled ? borderColor : Colors.grey[300]!;
-
-    return OutlinedButton.icon(
-      onPressed: enabled ? onTap : null,
-      icon: Icon(icon, size: iconSize, color: effectiveColor), // aqui!
-      label: Text(
-        label,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          color: effectiveColor,
-        ),
-      ),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: effectiveColor,
-        side: BorderSide(color: effectiveBorder, width: 1.2),
-        textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        minimumSize: Size(0, 32),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: Colors.white,
-        disabledForegroundColor: Colors.grey[400],
-        disabledBackgroundColor: Colors.white,
-      ),
-    );
-  }
-
   String _formatDataHora(DateTime dt) {
     String doisDigitos(int n) => n.toString().padLeft(2, '0');
     return '${doisDigitos(dt.day)}/${doisDigitos(dt.month)}/${dt.year} ${doisDigitos(dt.hour)}:${doisDigitos(dt.minute)}';
@@ -490,23 +501,29 @@ class _ManifestacoesGeralPageState extends State<ManifestacoesGeralPage> {
 }
 
 class Manifestacao {
+  final String nome;
+  final String cpf;
   final String tipo;
   final IconData icon;
   final String texto;
   final DateTime dataHora;
   final bool visto;
-  final String email; // novo campo
+  final String email;
 
   Manifestacao({
+    required this.nome,
+    required this.cpf,
     required this.tipo,
     required this.icon,
     required this.texto,
     required this.dataHora,
     required this.visto,
-    required this.email, // novo campo
+    required this.email,
   });
 
   Manifestacao copyWith({
+    String? nome,
+    String? cpf,
     String? tipo,
     IconData? icon,
     String? texto,
@@ -515,6 +532,8 @@ class Manifestacao {
     String? email,
   }) {
     return Manifestacao(
+      nome: nome ?? this.nome,
+      cpf: cpf ?? this.cpf,
       tipo: tipo ?? this.tipo,
       icon: icon ?? this.icon,
       texto: texto ?? this.texto,

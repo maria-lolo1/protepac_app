@@ -18,8 +18,11 @@ class _NovaSugestaoPageState extends State<NovaSugestaoPage> {
     if (_controller.text.trim().length < minLength) {
       showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (_) => ModalMensagemPosEnvio(
-          tipo: MensagemPosEnvioTipo.faltando,
+          tipo: MensagemPosEnvioTipo.faltando, // <-- Corrija aqui!
+          mensagemCustomizada:
+              'Por favor, escreva pelo menos $minLength caracteres.',
           onVoltar: () => Navigator.of(context, rootNavigator: true).pop(),
         ),
       );
@@ -30,6 +33,8 @@ class _NovaSugestaoPageState extends State<NovaSugestaoPage> {
       barrierDismissible: false,
       builder: (_) => ModalMensagemPosEnvio(
         tipo: MensagemPosEnvioTipo.sucesso,
+        mensagemCustomizada:
+            'Agradecemos pela mensagem! Nossa equipe vai avaliar sua sugestão e qualquer coisa entrará em contato.',
         onVerManif: () {
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.of(context).pushReplacementNamed('/minhas_manifestacoes');

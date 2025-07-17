@@ -7,8 +7,10 @@ class PrimeiroLoginPage extends StatefulWidget {
 }
 
 class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
-  final TextEditingController cpfController = TextEditingController();
-  final TextEditingController emailController = TextEditingController(); // Novo
+  String tipoDoc = 'CPF';
+  final TextEditingController docController = TextEditingController();
+  final TextEditingController nomeController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   final TextEditingController confirmaSenhaController = TextEditingController();
 
@@ -19,16 +21,28 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
   String mensagem = '';
   String nivelSenha = '';
 
-  String _formatCpf(String value) {
+  String _formatDoc(String value) {
     value = value.replaceAll(RegExp(r'\D'), '');
-    if (value.length > 11) value = value.substring(0, 11);
-    String out = '';
-    for (int i = 0; i < value.length; i++) {
-      if (i == 3 || i == 6) out += '.';
-      if (i == 9) out += '-';
-      out += value[i];
+    if (tipoDoc == 'CPF') {
+      if (value.length > 11) value = value.substring(0, 11);
+      String out = '';
+      for (int i = 0; i < value.length; i++) {
+        if (i == 3 || i == 6) out += '.';
+        if (i == 9) out += '-';
+        out += value[i];
+      }
+      return out;
+    } else {
+      if (value.length > 14) value = value.substring(0, 14);
+      String out = '';
+      for (int i = 0; i < value.length; i++) {
+        if (i == 2 || i == 5) out += '.';
+        if (i == 8) out += '/';
+        if (i == 12) out += '-';
+        out += value[i];
+      }
+      return out;
     }
-    return out;
   }
 
   String _nivelSenha(String senha) {
@@ -52,19 +66,24 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
     return "Muito fraca";
   }
 
-  bool get cpfValido =>
-      cpfController.text.replaceAll(RegExp(r'\D'), '').length == 11;
+  bool get docValido {
+    final val = docController.text.replaceAll(RegExp(r'\D'), '');
+    if (tipoDoc == 'CPF') return val.length == 11;
+    return val.length == 14;
+  }
 
   bool get emailValido =>
       emailController.text.contains('@') && emailController.text.contains('.');
 
+  bool get nomeValido => nomeController.text.trim().length >= 3;
+
   @override
   void initState() {
     super.initState();
-    cpfController.addListener(() {
-      final formatted = _formatCpf(cpfController.text);
-      if (formatted != cpfController.text) {
-        cpfController.value = cpfController.value.copyWith(
+    docController.addListener(() {
+      final formatted = _formatDoc(docController.text);
+      if (formatted != docController.text) {
+        docController.value = docController.value.copyWith(
           text: formatted,
           selection: TextSelection.collapsed(offset: formatted.length),
         );
@@ -80,17 +99,20 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
 
   @override
   void dispose() {
-    cpfController.dispose();
+    docController.dispose();
+    nomeController.dispose();
     emailController.dispose();
     senhaController.dispose();
     confirmaSenhaController.dispose();
     super.dispose();
   }
 
-  void verificarCpf() {
-    if (!cpfValido) {
+  void verificarDoc() {
+    if (!docValido) {
       setState(() {
-        mensagem = 'Preencha o CPF corretamente!';
+        mensagem = tipoDoc == 'CPF'
+            ? 'Preencha o CPF corretamente!'
+            : 'Preencha o CNPJ corretamente!';
       });
       return;
     }
@@ -101,6 +123,12 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
   }
 
   void redefinirSenha() {
+    if (!nomeValido) {
+      setState(() {
+        mensagem = "Preencha o nome completo.";
+      });
+      return;
+    }
     if (!emailValido) {
       setState(() {
         mensagem = "Preencha um e-mail válido.";
@@ -150,7 +178,7 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -159,27 +187,44 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                     height: 120,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  // Dropdown CPF/CNPJ (agora substitui o label)
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      'CPF',
+                    child: DropdownButton<String>(
+                      value: tipoDoc,
+                      underline: SizedBox(),
+                      items: [
+                        DropdownMenuItem(value: 'CPF', child: Text('CPF')),
+                        DropdownMenuItem(value: 'CNPJ', child: Text('CNPJ')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null && value != tipoDoc) {
+                          setState(() {
+                            tipoDoc = value;
+                            docController.clear();
+                          });
+                        }
+                      },
                       style: TextStyle(
-                        color: laranja,
+                        color: laranja, // mesma cor do label antigo!
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
+                      icon: Icon(Icons.arrow_drop_down, color: laranja),
+                      dropdownColor: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 4),
                   TextField(
-                    controller: cpfController,
+                    controller: docController,
                     keyboardType: TextInputType.number,
                     enabled: estado == null,
                     style: TextStyle(color: azul),
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(11),
+                      LengthLimitingTextInputFormatter(
+                        tipoDoc == 'CPF' ? 11 : 14,
+                      ),
                     ],
                     decoration: InputDecoration(
                       filled: true,
@@ -202,19 +247,16 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                           width: 2.2,
                         ),
                       ),
-                      hintText: '000.000.000-00',
+                      hintText: tipoDoc == 'CPF'
+                          ? '000.000.000-00'
+                          : '00.000.000/0000-00',
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     onChanged: (value) {
                       String text = value.replaceAll(RegExp(r'\D'), '');
-                      String formatted = '';
-                      for (int i = 0; i < text.length; i++) {
-                        if (i == 3 || i == 6) formatted += '.';
-                        if (i == 9) formatted += '-';
-                        formatted += text[i];
-                      }
-                      if (formatted != cpfController.text) {
-                        cpfController.value = TextEditingValue(
+                      String formatted = _formatDoc(text);
+                      if (formatted != docController.text) {
+                        docController.value = TextEditingValue(
                           text: formatted,
                           selection: TextSelection.collapsed(
                             offset: formatted.length,
@@ -230,7 +272,7 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
-                        onPressed: cpfValido ? verificarCpf : null,
+                        onPressed: docValido ? verificarDoc : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFFFD700),
                           foregroundColor: azul,
@@ -248,7 +290,65 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                       ),
                     ),
                   if (estado == 'pode_redefinir') ...[
-                    // NOVO CAMPO EMAIL
+                    // Nome Completo
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nome Completo',
+                          style: TextStyle(
+                            color: laranja,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        TextField(
+                          controller: nomeController,
+                          keyboardType: TextInputType.name,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(color: azul),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2.2,
+                              ),
+                            ),
+                            hintText: 'Digite seu nome completo',
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        if (nomeController.text.isNotEmpty && !nomeValido)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4, bottom: 4),
+                            child: Text(
+                              "Nome muito curto",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    // EMAIL
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -286,7 +386,7 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                                 width: 2.2,
                               ),
                             ),
-                            hintText: 'seu@email.com',
+                            hintText: 'Digite seu@email.com',
                             hintStyle: TextStyle(color: Colors.grey),
                           ),
                         ),
@@ -469,7 +569,8 @@ class _PrimeiroLoginPageState extends State<PrimeiroLoginPage> {
                                 (nivelSenha == "Média" ||
                                     nivelSenha == "Forte" ||
                                     nivelSenha == "Muito forte") &&
-                                emailValido)
+                                emailValido &&
+                                nomeValido)
                             ? redefinirSenha
                             : null,
                         style: ElevatedButton.styleFrom(

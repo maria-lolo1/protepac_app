@@ -10,6 +10,7 @@ class ModalMensagemPosEnvio extends StatelessWidget {
   final VoidCallback? onProsseguir;
   final VoidCallback? onTentarNovamente;
   final VoidCallback? onVoltar;
+  final String? mensagemCustomizada;
 
   const ModalMensagemPosEnvio({
     Key? key,
@@ -18,6 +19,7 @@ class ModalMensagemPosEnvio extends StatelessWidget {
     this.onProsseguir,
     this.onTentarNovamente,
     this.onVoltar,
+    this.mensagemCustomizada, // <-- novo parâmetro
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class ModalMensagemPosEnvio extends StatelessWidget {
     // Layout responsivo para os botões de sucesso
     if (tipo == MensagemPosEnvioTipo.sucesso) {
       mensagem =
+          mensagemCustomizada ??
           'Agradecemos pela mensagem! Nossa equipe comercial entrará em contato em breve.';
 
       botoesWidget = LayoutBuilder(

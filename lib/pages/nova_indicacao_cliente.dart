@@ -99,7 +99,7 @@ class _NovaIndicacaoClientePageState extends State<NovaIndicacaoClientePage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Por gentileza, nos indique os dados abaixo da pessoa indicada',
+                    'Por gentileza, informe os dados da pessoa indicada, e nossa equipe entrará em contato.',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,

@@ -7,41 +7,44 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController cpfController = TextEditingController();
+  final TextEditingController docController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   bool senhaVisivel = false;
 
+  String tipoDoc = 'CPF'; // Padrão
+
+  String get _labelDoc => tipoDoc == 'CPF' ? 'CPF' : 'CNPJ';
+  MaskedInputFormatter get _mask => tipoDoc == 'CPF'
+      ? MaskedInputFormatter('###.###.###-##')
+      : MaskedInputFormatter('##.###.###/####-##');
+  int get _maxLength => tipoDoc == 'CPF' ? 14 : 18;
+
   void _fazerLogin() {
-    String cpf = cpfController.text.trim();
+    String doc = docController.text.trim();
     String senha = senhaController.text.trim();
 
-    // ADM
-    if (cpf == '123.456.790-00' && senha == '123456') {
+    // Exemplo de login ADM, FUNCIONARIO, USUARIO...
+    // Adapte para checar CNPJ se necessário!
+    if (doc == '123.456.790-00' && senha == '123456') {
       Navigator.pushReplacementNamed(
         context,
         '/manifestacoes_geral',
         arguments: {'role': 'adm'},
       );
-    }
-    // Funcionário
-    else if (cpf == '987.654.321-00' && senha == '123456') {
+    } else if (doc == '987.654.321-00' && senha == '123456') {
       Navigator.pushReplacementNamed(
         context,
         '/manifestacoes_geral',
         arguments: {'role': 'funcionario'},
       );
-    }
-    // Usuário comum
-    else if (cpf == '123.456.789-00' && senha == '123456') {
+    } else if (doc == '123.456.789-00' && senha == '123456') {
       Navigator.pushReplacementNamed(context, '/home');
-    }
-    // Erro
-    else {
+    } else {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: Text('Erro'),
-          content: Text('CPF ou senha inválidos!'),
+          content: Text('${_labelDoc} ou senha inválidos!'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -59,29 +62,44 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/logo.png', height: 120, fit: BoxFit.contain),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
+              // Dropdown CPF/CNPJ acima do campo
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  'CPF',
+                child: DropdownButton<String>(
+                  value: tipoDoc,
+                  underline: SizedBox(),
+                  items: [
+                    DropdownMenuItem(value: 'CPF', child: Text('CPF')),
+                    DropdownMenuItem(value: 'CNPJ', child: Text('CNPJ')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null && value != tipoDoc) {
+                      setState(() {
+                        tipoDoc = value;
+                        docController.clear();
+                      });
+                    }
+                  },
                   style: TextStyle(
-                    color: Color(0xFFFF9900),
+                    color: Color(0xFFFF9900), // Mesma cor do antigo label!
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
+                  icon: Icon(Icons.arrow_drop_down, color: Color(0xFFFF9900)),
+                  dropdownColor: Colors.white,
                 ),
               ),
-              const SizedBox(height: 4),
               TextField(
-                controller: cpfController,
+                controller: docController,
                 keyboardType: TextInputType.number,
-                maxLength: 14,
-                inputFormatters: [MaskedInputFormatter('###.###.###-##')],
+                maxLength: _maxLength,
+                inputFormatters: [_mask],
                 style: TextStyle(color: Color(0xFF181883), fontSize: 16),
                 decoration: InputDecoration(
                   counterText: '',
@@ -102,9 +120,13 @@ class _LoginPageState extends State<LoginPage> {
                       width: 2.2,
                     ),
                   ),
+                  hintText: tipoDoc == 'CPF'
+                      ? '000.000.000-00'
+                      : '00.000.000/0000-00',
                 ),
               ),
-              const SizedBox(height: 18),
+
+              const SizedBox(height: 12),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -139,6 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 2.2,
                     ),
                   ),
+                  hintText: 'Digite sua Senha',
                   suffixIcon: IconButton(
                     icon: Icon(
                       senhaVisivel ? Icons.visibility : Icons.visibility_off,
@@ -152,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -174,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text('Logar'),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               SizedBox(
                 width: 280,
                 height: 42,
@@ -196,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text('Primeiro login no app? Clique aqui'),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/esqueci_senha'),
                 child: Text(

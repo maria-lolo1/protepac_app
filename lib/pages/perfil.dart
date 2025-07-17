@@ -7,6 +7,7 @@ class PerfilPage extends StatefulWidget {
 }
 
 class _PerfilPageState extends State<PerfilPage> {
+  final String nome = 'Alexandre Gerhardt'; // Nome fictício
   final String cpf = '12345678901'; // Troque pelo CPF real
   final String senha = '123456'; // Troque pela senha real
   String email = 'usuario@email.com'; // Troque pelo email real
@@ -19,7 +20,6 @@ class _PerfilPageState extends State<PerfilPage> {
     emailController.text = email;
   }
 
-  // Mascara CPF: ***.***.789-01
   String _maskCpf(String cpf) {
     if (cpf.length != 11) return cpf;
     return '***.***.${cpf.substring(6, 9)}-${cpf.substring(9)}';
@@ -46,7 +46,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     height: 120,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   Text(
                     'Meu Perfil',
                     style: TextStyle(
@@ -56,7 +56,39 @@ class _PerfilPageState extends State<PerfilPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Nome',
+                      style: TextStyle(
+                        color: laranja,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xFFFFD700), width: 2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      nome,
+                      style: TextStyle(
+                        color: azul,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.2,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(

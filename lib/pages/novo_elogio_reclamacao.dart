@@ -22,22 +22,26 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
       tipoSelecionado != null && _controller.text.trim().length >= minLength;
 
   void _enviar() {
-    if (!_formValido) {
+    if (_controller.text.trim().length < minLength) {
       showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (_) => ModalMensagemPosEnvio(
-          tipo: MensagemPosEnvioTipo.faltando,
+          tipo: MensagemPosEnvioTipo.faltando, // <-- Corrija aqui!
+          mensagemCustomizada:
+              'Por favor, escreva pelo menos $minLength caracteres.',
           onVoltar: () => Navigator.of(context, rootNavigator: true).pop(),
         ),
       );
       return;
     }
-
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => ModalMensagemPosEnvio(
         tipo: MensagemPosEnvioTipo.sucesso,
+        mensagemCustomizada:
+            'Agradecemos pela mensagem! Nossa equipe vai avaliar seu feedback e qualquer coisa entrará em contato.',
         onVerManif: () {
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.of(context).pushReplacementNamed('/minhas_manifestacoes');
@@ -99,7 +103,7 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Por gentileza, escreva seu elogio ou reclamação, que nossa equipe irá receber e analisar sua manifestação.',
+                    'Por gentileza, escreva seu elogio ou reclamação, que nossa equipe irá receber e analisar seu feedback.',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,
