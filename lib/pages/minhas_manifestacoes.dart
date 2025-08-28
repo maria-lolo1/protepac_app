@@ -13,6 +13,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       tipo: 'Elogio',
       icon: Icons.thumb_up_alt_rounded,
       texto: 'Equipe atenciosa, resolveram tudo com rapidez!',
+      resposta: 'Muito obrigado pelo seu elogio! Nossa equipe agradece.',
       dataHora: DateTime(2025, 7, 16, 18, 33),
       visto: false,
     ),
@@ -20,6 +21,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       tipo: 'Reclamação',
       icon: Icons.thumb_down_alt_rounded,
       texto: 'Fiquei aguardando retorno e não fui atendido.',
+      resposta: 'Pedimos desculpas pelo transtorno, já estamos ajustando.',
       dataHora: DateTime(2025, 7, 15, 9, 15),
       visto: false,
     ),
@@ -27,6 +29,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       tipo: 'Chamado técnico',
       icon: Icons.build_circle_rounded,
       texto: 'CFTV - Imagens da câmera frontal estão fora do ar.',
+      resposta: 'Chamado registrado, técnico será enviado em breve.',
       dataHora: DateTime(2025, 7, 14, 14, 55),
       visto: true,
     ),
@@ -35,6 +38,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       icon: Icons.security_rounded,
       texto:
           'Câmera - Câmera da frente apresentou alerta de movimento suspeito.',
+      resposta: 'Equipe de segurança notificada, monitoramento reforçado.',
       dataHora: DateTime(2025, 7, 13, 11, 25),
       visto: true,
     ),
@@ -43,6 +47,8 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       icon: Icons.request_page_rounded,
       texto:
           'Alarme - Gostaria de orçamento para ampliação do sistema de alarme.',
+      resposta:
+          'Seu pedido de orçamento foi recebido, retornaremos com valores.',
       dataHora: DateTime(2025, 7, 12, 10, 12),
       visto: true,
     ),
@@ -50,6 +56,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       tipo: 'Indicação Cliente',
       icon: Icons.person_add_alt_1_rounded,
       texto: 'Maria Silva Pereira - 51996756445\nCFTV - Comercial.',
+      resposta: 'Agradecemos pela indicação, nossa equipe fará contato.',
       dataHora: DateTime(2025, 7, 11, 13, 44),
       visto: true,
     ),
@@ -57,8 +64,9 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
       tipo: 'Sugestão',
       icon: Icons.lightbulb_outline_rounded,
       texto: 'Poderiam adicionar notificações por WhatsApp.',
+      resposta: 'Sugestão recebida, vamos avaliar em nossa equipe.',
       dataHora: DateTime(2025, 7, 10, 15, 55),
-      visto: true, // 7º só para não quebrar nada, pode remover se quiser
+      visto: true,
     ),
   ];
 
@@ -99,6 +107,9 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
               itemBuilder: (context, index) {
                 final m = manifestacoes[index];
                 return Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ), // margem pra não colar na tela
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Color(0xFFFFD700), width: 2),
@@ -114,6 +125,7 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                   padding: EdgeInsets.all(14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min, // altura só o suficiente
                     children: [
                       Row(
                         children: [
@@ -141,83 +153,59 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
                       SizedBox(height: 8),
                       Text(
                         m.texto,
-                        style: TextStyle(color: laranja, fontSize: 15),
+                        style: TextStyle(color: azul, fontSize: 15),
                       ),
                       SizedBox(height: 12),
-                      Row(
-                        children: [
-                          // Editar (menor)
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              _editarManifestacao(context, index, m);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.grey[800],
-                              side: BorderSide(color: Colors.grey, width: 1.2),
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 16,
-                              ),
-                              minimumSize: Size(0, 32),
-                            ),
-                            icon: Icon(Icons.edit, size: 16),
-                            label: Text("Editar"),
+                      if (m.resposta != null) ...[
+                        Text(
+                          "Resposta:",
+                          style: TextStyle(
+                            color: laranja,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
-                          SizedBox(width: 12),
-                          // Excluir (menor)
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              _confirmarExclusao(context, index);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.red[700],
-                              side: BorderSide(color: Colors.red, width: 1.2),
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 16,
-                              ),
-                              minimumSize: Size(0, 32),
-                            ),
-                            icon: Icon(Icons.delete_forever, size: 17),
-                            label: Text("Excluir"),
-                          ),
-                          SizedBox(width: 12),
-                          // Pendende/Visto círculo
-                          Container(
-                            width: 49,
-                            height: 49,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                              border: Border.all(
-                                color: m.visto
-                                    ? Colors.green
-                                    : Color(0xFFFF9900),
-                                width: 2.2,
+                        ),
+                        SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                m.resposta!,
+                                style: TextStyle(color: laranja, fontSize: 14),
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
                               ),
                             ),
-                            child: Center(
-                              child: Icon(
-                                m.visto
-                                    ? Icons.check_circle
-                                    : Icons.hourglass_bottom,
-                                color: m.visto
-                                    ? Colors.green
-                                    : Color(0xFFFF9900),
-                                size: 30,
+                            SizedBox(width: 8),
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: m.visto
+                                      ? Colors.green
+                                      : Color(0xFFFF9900),
+                                  width: 2.2,
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  m.visto
+                                      ? Icons.check_circle
+                                      : Icons.hourglass_bottom,
+                                  color: m.visto
+                                      ? Colors.green
+                                      : Color(0xFFFF9900),
+                                  size: 26,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 );
@@ -244,127 +232,13 @@ class _MinhasManifestacoesPageState extends State<MinhasManifestacoesPage> {
     String doisDigitos(int n) => n.toString().padLeft(2, '0');
     return '${doisDigitos(dt.day)}/${doisDigitos(dt.month)}/${dt.year} ${doisDigitos(dt.hour)}:${doisDigitos(dt.minute)}';
   }
-
-  void _editarManifestacao(BuildContext context, int index, Manifestacao m) {
-    final controller = TextEditingController(text: m.texto);
-
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.35),
-      builder: (_) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
-          title: Row(
-            children: [
-              Icon(m.icon, color: Color(0xFF181883)),
-              SizedBox(width: 7),
-              Text(
-                m.tipo,
-                style: TextStyle(
-                  color: Color(0xFF181883),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: TextField(
-            controller: controller,
-            maxLines: 5,
-            maxLength: 500,
-            style: TextStyle(color: Color(0xFF181883)),
-            decoration: InputDecoration(
-              hintText: 'Edite sua manifestação...',
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
-              ),
-              counterStyle: TextStyle(color: Color(0xFF181883)),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancelar"),
-              style: TextButton.styleFrom(foregroundColor: Colors.grey[700]),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  manifestacoes[index] = manifestacoes[index].copyWith(
-                    texto: controller.text,
-                  );
-                });
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFFD700),
-                foregroundColor: Color(0xFF181883),
-              ),
-              child: Text("Salvar"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _confirmarExclusao(BuildContext context, int index) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.45),
-      builder: (_) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          backgroundColor: Colors.white,
-          title: Text(
-            "Tem certeza que deseja excluir sua manifestação?",
-            style: TextStyle(
-              color: Color(0xFF181883),
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Voltar"),
-              style: TextButton.styleFrom(foregroundColor: Color(0xFF181883)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  manifestacoes.removeAt(index);
-                });
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[600],
-                foregroundColor: Colors.white,
-              ),
-              child: Text("Excluir"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class Manifestacao {
   final String tipo;
   final IconData icon;
   final String texto;
+  final String? resposta;
   final DateTime dataHora;
   final bool visto;
 
@@ -372,6 +246,7 @@ class Manifestacao {
     required this.tipo,
     required this.icon,
     required this.texto,
+    this.resposta,
     required this.dataHora,
     required this.visto,
   });
@@ -380,6 +255,7 @@ class Manifestacao {
     String? tipo,
     IconData? icon,
     String? texto,
+    String? resposta,
     DateTime? dataHora,
     bool? visto,
   }) {
@@ -387,8 +263,9 @@ class Manifestacao {
       tipo: tipo ?? this.tipo,
       icon: icon ?? this.icon,
       texto: texto ?? this.texto,
+      resposta: resposta ?? this.resposta,
       dataHora: dataHora ?? this.dataHora,
-      visto: visto ?? this.visto, // nunca será null se usado certo
+      visto: visto ?? this.visto,
     );
   }
 }

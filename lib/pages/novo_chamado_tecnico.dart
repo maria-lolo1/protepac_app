@@ -14,14 +14,32 @@ class NovoChamadoTecnicoPage extends StatefulWidget {
 class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
   bool cftv = false;
   bool alarme = false;
-  bool enviando = false;
+  bool outro = false;
+
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controllerOutro = TextEditingController();
 
   static const int maxLength = 500;
   static const int minLength = 5;
 
-  bool get _formValido =>
-      (cftv || alarme) && _controller.text.trim().length >= minLength;
+  bool get _formValido {
+    // Precisa ter pelo menos 1 check
+    final hasCheck = cftv || alarme || outro;
+
+    // Regra para descrição principal
+    final textoPrincipalOk = _controller.text.trim().length >= minLength;
+
+    // Se for "Outro", precisa também escrever algo
+    final outroOk = !outro || _controllerOutro.text.trim().isNotEmpty;
+
+    // ✅ Se marcou "Outro", exige os dois textos
+    if (outro) {
+      return hasCheck && textoPrincipalOk && outroOk;
+    }
+
+    // ✅ Se marcou apenas câmera/alarme, exige só o texto principal
+    return hasCheck && textoPrincipalOk;
+  }
 
   void _enviar() {
     if (!_formValido) {
@@ -131,7 +149,7 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Por gentileza, especifique sua necessidade de chamado técnico, que nossa equipe entrará em contato.',
+                    'Por gentileza, especifique sua necessidade de chamado técnico, manutenção, revisão que nossa equipe entrará em contato.',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,
@@ -143,7 +161,7 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
                   _CheckBoxTile(
                     value: cftv,
                     onChanged: (val) => setState(() => cftv = val!),
-                    text: 'CFTV',
+                    text: 'Câmera',
                     azul: azul,
                     laranja: laranja,
                   ),
@@ -155,11 +173,56 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
                     azul: azul,
                     laranja: laranja,
                   ),
+                  const SizedBox(height: 16),
+
+                  _CheckBoxTile(
+                    value: outro,
+                    onChanged: (val) => setState(() => outro = val!),
+                    text: 'Outro',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  if (outro) ...[
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _controllerOutro,
+                      minLines: 2,
+                      maxLines: null, // cresce conforme digita
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(color: azul, fontSize: 16),
+                      decoration: InputDecoration(
+                        hintText: 'Descreva outro tipo de chamado...',
+                        hintStyle: TextStyle(color: azul),
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(13),
+                          borderSide: BorderSide(color: laranja, width: 2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(13),
+                          borderSide: BorderSide(
+                            color: Color(0xFFFFD700),
+                            width: 2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(13),
+                          borderSide: BorderSide(
+                            color: Color(0xFFFFD700),
+                            width: 2.1,
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.fromLTRB(24, 14, 24, 14),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Descreva seu Chamado Técnico',
+                      'Descreva seu Chamado Técnico, Manutenção, Revisão',
                       style: TextStyle(
                         color: laranja,
                         fontWeight: FontWeight.bold,

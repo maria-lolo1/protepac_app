@@ -198,28 +198,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 18),
-              SizedBox(
-                width: 280,
-                height: 42,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF181883),
-                    foregroundColor: Color(0xFFFFD700),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: () =>
-                      Navigator.pushNamed(context, '/primeiro_login'),
-                  child: Text('Primeiro login no app? Clique aqui'),
-                ),
-              ),
-              const SizedBox(height: 18),
               GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/esqueci_senha'),
                 child: Text(
