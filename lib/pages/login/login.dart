@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     if (doc == '987.654.321-00' && senha == '1234') {
       Navigator.pushReplacementNamed(
         context,
-        '/manifestacoes_geral',
+        '/home_adm',
         arguments: {'role': 'adm'},
       );
       return;

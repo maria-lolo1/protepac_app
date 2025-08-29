@@ -1,3 +1,4 @@
+// lib/widgets/custom_bottom_navbar_geral.dart
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBarGeral extends StatelessWidget {
@@ -15,40 +16,40 @@ class CustomBottomNavBarGeral extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      height: 50,
+      height: 56,
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor, // muda conforme claro/escuro
+        color: theme.scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 2,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          SizedBox(
-            width: 140, // ajuste para caber "Manifestações"
-            child: _buildNavItem(
-              context: context,
-              icon: Icons.list_alt_rounded,
-              label: 'Manifestações',
-              selected: selectedIndex == 0,
-              onTap: () => onTap(0),
-            ),
+          _buildNavItem(
+            context: context,
+            icon: Icons.home_rounded,
+            label: 'Home',
+            selected: selectedIndex == 0,
+            onTap: () => onTap(0),
           ),
-          const SizedBox(width: 24),
-          SizedBox(
-            width: 140,
-            child: _buildNavItem(
-              context: context,
-              icon: Icons.logout,
-              label: 'Sair',
-              selected: selectedIndex == 1,
-              onTap: () => onTap(1),
-            ),
+          _buildNavItem(
+            context: context,
+            icon: Icons.person_add_alt_1,
+            label: 'Adicionar',
+            selected: selectedIndex == 1,
+            onTap: () => onTap(1),
+          ),
+          _buildNavItem(
+            context: context,
+            icon: Icons.person_rounded,
+            label: 'Perfil',
+            selected: selectedIndex == 2,
+            onTap: () => onTap(2),
           ),
         ],
       ),
@@ -63,15 +64,14 @@ class CustomBottomNavBarGeral extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
-    final selectedColor =
-        theme.colorScheme.primary; // azul no claro, laranja no escuro
-    final unselectedColor = Colors.grey; // pode mudar também p/ theme.hintColor
+    final selectedColor = theme.colorScheme.primary;
+    final unselectedColor = Colors.grey;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         color: Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -80,7 +80,7 @@ class CustomBottomNavBarGeral extends StatelessWidget {
               size: 24,
               color: selected ? selectedColor : unselectedColor,
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
               label,
               style: TextStyle(
