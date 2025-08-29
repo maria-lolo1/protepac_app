@@ -1,34 +1,28 @@
-// lib/pages/novo_aviso_seguranca.dart
-
 import 'package:flutter/material.dart';
-import '../widgets/modal_mensagem_pos_envio.dart';
+import '../../widgets/modal_mensagem_pos_envio.dart';
 import 'package:flutter/services.dart';
 
-class NovoAvisoSegurancaPage extends StatefulWidget {
-  const NovoAvisoSegurancaPage({Key? key}) : super(key: key);
+class NovaSugestaoPage extends StatefulWidget {
+  const NovaSugestaoPage({Key? key}) : super(key: key);
 
   @override
-  State<NovoAvisoSegurancaPage> createState() => _NovoAvisoSegurancaPageState();
+  State<NovaSugestaoPage> createState() => _NovaSugestaoPageState();
 }
 
-class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
-  bool sobreCamera = false;
-  bool sobreAlarme = false;
+class _NovaSugestaoPageState extends State<NovaSugestaoPage> {
   final TextEditingController _controller = TextEditingController();
-
   static const int maxLength = 500;
   static const int minLength = 5;
 
-  bool get _formValido =>
-      (sobreCamera || sobreAlarme) &&
-      _controller.text.trim().length >= minLength;
-
   void _enviar() {
-    if (!_formValido) {
+    if (_controller.text.trim().length < minLength) {
       showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (_) => ModalMensagemPosEnvio(
-          tipo: MensagemPosEnvioTipo.faltando,
+          tipo: MensagemPosEnvioTipo.faltando, // <-- Corrija aqui!
+          mensagemCustomizada:
+              'Por favor, escreva pelo menos $minLength caracteres.',
           onVoltar: () => Navigator.of(context, rootNavigator: true).pop(),
         ),
       );
@@ -39,6 +33,8 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
       barrierDismissible: false,
       builder: (_) => ModalMensagemPosEnvio(
         tipo: MensagemPosEnvioTipo.sucesso,
+        mensagemCustomizada:
+            'Agradecemos pela mensagem! Nossa equipe vai avaliar sua sugestão e qualquer coisa entrará em contato.',
         onVerManif: () {
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.of(context).pushReplacementNamed('/minhas_manifestacoes');
@@ -66,7 +62,6 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
             elevation: 0,
             pinned: false,
             floating: false,
-            snap: false,
             expandedHeight: 70,
             flexibleSpace: SafeArea(
               child: Row(
@@ -75,8 +70,6 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
                     icon: Icon(Icons.arrow_back, color: azul),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  // Se quiser um título aqui, coloque:
-                  // Text('Aviso de Segurança', style: TextStyle(...))
                 ],
               ),
             ),
@@ -94,7 +87,7 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Por gentileza, especifique sua necessidade em relação à segurança, que nossa equipe entrará em contato.',
+                    'Por gentileza, escreva sua sugestão, que será avaliada pela nossa equipe.',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,
@@ -103,26 +96,10 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  _CheckBoxTile(
-                    value: sobreCamera,
-                    onChanged: (v) => setState(() => sobreCamera = v!),
-                    text: 'Sobre Câmera',
-                    azul: azul,
-                    laranja: laranja,
-                  ),
-                  const SizedBox(height: 16),
-                  _CheckBoxTile(
-                    value: sobreAlarme,
-                    onChanged: (v) => setState(() => sobreAlarme = v!),
-                    text: 'Sobre Alarme',
-                    azul: azul,
-                    laranja: laranja,
-                  ),
-                  const SizedBox(height: 24),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Descreva seu aviso de Segurança',
+                      'Deixe sua sugestão para a Protepac',
                       style: TextStyle(
                         color: laranja,
                         fontWeight: FontWeight.bold,
@@ -211,7 +188,9 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
                             ),
                             elevation: 0,
                           ),
-                          onPressed: _formValido ? _enviar : null,
+                          onPressed: _controller.text.trim().length >= minLength
+                              ? _enviar
+                              : null,
                           child: const Text('Enviar'),
                         ),
                       ),
@@ -223,50 +202,6 @@ class _NovoAvisoSegurancaPageState extends State<NovoAvisoSegurancaPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _CheckBoxTile extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool?> onChanged;
-  final String text;
-  final Color azul;
-  final Color laranja;
-
-  const _CheckBoxTile({
-    required this.value,
-    required this.onChanged,
-    required this.text,
-    required this.azul,
-    required this.laranja,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: laranja, width: 2),
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
-      child: CheckboxListTile(
-        value: value,
-        onChanged: onChanged,
-        title: Text(
-          text,
-          style: TextStyle(
-            color: azul,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        activeColor: laranja,
-        checkColor: azul,
-        controlAffinity: ListTileControlAffinity.leading,
-        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

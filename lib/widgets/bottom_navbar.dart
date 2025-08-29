@@ -12,10 +12,13 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      height: 50, // <-- MUDE AQUI a altura da barra como quiser!
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color:
+            theme.scaffoldBackgroundColor, // branco no claro, preto no escuro
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -28,18 +31,21 @@ class CustomBottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNavItem(
+            context: context,
             icon: Icons.home_rounded,
             label: 'Home',
             selected: selectedIndex == 0,
             onTap: () => onTap(0),
           ),
           _buildNavItem(
+            context: context,
             icon: Icons.list_alt_rounded,
             label: 'Manifestações',
             selected: selectedIndex == 1,
             onTap: () => onTap(1),
           ),
           _buildNavItem(
+            context: context,
             icon: Icons.person_rounded,
             label: 'Perfil',
             selected: selectedIndex == 2,
@@ -51,18 +57,23 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required bool selected,
     required VoidCallback onTap,
   }) {
-    final selectedColor = Color(0xFF181883);
-    final unselectedColor = Color(0xFFB0B0B0);
+    final theme = Theme.of(context);
+
+    final selectedColor =
+        theme.colorScheme.primary; // azul no claro, laranja no escuro
+    final unselectedColor = Colors.grey; // pode usar theme.hintColor também
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         color: Colors.transparent,
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -71,7 +82,7 @@ class CustomBottomNavBar extends StatelessWidget {
               size: 24,
               color: selected ? selectedColor : unselectedColor,
             ),
-            SizedBox(height: 1),
+            const SizedBox(height: 1),
             Text(
               label,
               style: TextStyle(

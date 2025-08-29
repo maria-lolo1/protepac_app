@@ -1,7 +1,7 @@
 // lib/pages/home_page.dart
 
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart';
+import '../../widgets/bottom_navbar.dart';
 
 class HomePage extends StatelessWidget {
   // Nova lista de botões na ordem solicitada
@@ -22,8 +22,8 @@ class HomePage extends StatelessWidget {
       Icons.request_page_rounded,
       '/nova_solicitacao_orcamento',
     ),
-    _MenuButton('Elogio', Icons.thumb_up, '/novo_elogio_reclamacao'),
-    _MenuButton('Reclamação', Icons.thumb_down, '/novo_elogio_reclamacao'),
+    _MenuButton('Elogio', Icons.thumb_up, '/novo_elogio'),
+    _MenuButton('Reclamação', Icons.thumb_down, '/nova_reclamacao'),
     _MenuButton('Sugestão', Icons.lightbulb_outline, '/nova_sugestao'),
   ];
 

@@ -1,7 +1,7 @@
 // lib/pages/novo_chamado_tecnico.dart
 
 import 'package:flutter/material.dart';
-import '../widgets/modal_mensagem_pos_envio.dart';
+import '../../widgets/modal_mensagem_pos_envio.dart';
 import 'package:flutter/services.dart';
 
 class NovoChamadoTecnicoPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
   final TextEditingController _controllerOutro = TextEditingController();
 
   static const int maxLength = 500;
-  static const int minLength = 5;
+  static const int minLength = 2;
 
   bool get _formValido {
     // Precisa ter pelo menos 1 check
@@ -178,7 +178,7 @@ class _NovoChamadoTecnicoPageState extends State<NovoChamadoTecnicoPage> {
                   _CheckBoxTile(
                     value: outro,
                     onChanged: (val) => setState(() => outro = val!),
-                    text: 'Outro',
+                    text: 'Outros',
                     azul: azul,
                     laranja: laranja,
                   ),

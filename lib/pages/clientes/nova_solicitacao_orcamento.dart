@@ -1,47 +1,58 @@
-// lib/pages/novo_elogio_reclamacao.dart
+// lib/pages/nova_solicitacao_orcamento.dart
 
 import 'package:flutter/material.dart';
-import '../widgets/modal_mensagem_pos_envio.dart';
+import '../../widgets/modal_mensagem_pos_envio.dart';
 import 'package:flutter/services.dart';
 
-class NovoElogioReclamacaoPage extends StatefulWidget {
-  const NovoElogioReclamacaoPage({Key? key}) : super(key: key);
+class NovaSolicitacaoOrcamentoPage extends StatefulWidget {
+  const NovaSolicitacaoOrcamentoPage({Key? key}) : super(key: key);
 
   @override
-  State<NovoElogioReclamacaoPage> createState() =>
-      _NovoElogioReclamacaoPageState();
+  State<NovaSolicitacaoOrcamentoPage> createState() =>
+      _NovaSolicitacaoOrcamentoPageState();
 }
 
-class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
-  String? tipoSelecionado; // 'elogio' ou 'reclamacao'
+class _NovaSolicitacaoOrcamentoPageState
+    extends State<NovaSolicitacaoOrcamentoPage> {
+  bool ampliacaoCameras = false;
+  bool ampliacaoAlarme = false;
+  bool outros = false;
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controllerOutros = TextEditingController();
   static const int maxLength = 500;
   static const int minLength = 5;
 
-  bool get _formValido =>
-      tipoSelecionado != null && _controller.text.trim().length >= minLength;
+  bool get formValido {
+    final marcado = ampliacaoCameras || ampliacaoAlarme || outros;
+
+    // regra do campo principal (não é obrigatório se tiver só ampliação/outros)
+    final textoPrincipalOk =
+        _controller.text.trim().isEmpty ||
+        _controller.text.trim().length >= minLength;
+
+    // regra do campo "Outros": se marcado, tem que ter pelo menos 1 caracter
+    final outroOk = !outros || _controllerOutros.text.trim().isNotEmpty;
+
+    return marcado && outroOk && textoPrincipalOk;
+  }
 
   void _enviar() {
-    if (_controller.text.trim().length < minLength) {
+    if (!formValido) {
       showDialog(
         context: context,
-        barrierDismissible: false,
         builder: (_) => ModalMensagemPosEnvio(
-          tipo: MensagemPosEnvioTipo.faltando, // <-- Corrija aqui!
-          mensagemCustomizada:
-              'Por favor, escreva pelo menos $minLength caracteres.',
+          tipo: MensagemPosEnvioTipo.faltando,
           onVoltar: () => Navigator.of(context, rootNavigator: true).pop(),
         ),
       );
       return;
     }
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => ModalMensagemPosEnvio(
         tipo: MensagemPosEnvioTipo.sucesso,
-        mensagemCustomizada:
-            'Agradecemos pela mensagem! Nossa equipe vai avaliar seu feedback e qualquer coisa entrará em contato.',
         onVerManif: () {
           Navigator.of(context, rootNavigator: true).pop();
           Navigator.of(context).pushReplacementNamed('/minhas_manifestacoes');
@@ -56,17 +67,8 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final azul = Color(0xFF181883);
-    final laranja = Color(0xFFFF9900);
-
-    String hint;
-    if (tipoSelecionado == 'elogio') {
-      hint = 'Digite seu elogio aqui...';
-    } else if (tipoSelecionado == 'reclamacao') {
-      hint = 'Digite sua reclamação aqui...';
-    } else {
-      hint = 'Digite aqui...';
-    }
+    final azul = const Color(0xFF181883);
+    final laranja = const Color(0xFFFF9900);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -103,7 +105,7 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Por gentileza, escreva seu elogio ou reclamação, que nossa equipe irá receber e analisar seu feedback.',
+                    'Por gentileza, especifique sua necessidade de orçamento, que nossa equipe entrará em contato.',
                     style: TextStyle(
                       color: azul,
                       fontWeight: FontWeight.bold,
@@ -112,42 +114,83 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  _ManifestacaoRadioCheckTile(
-                    selecionado: tipoSelecionado == 'elogio',
-                    onTap: () {
-                      setState(() {
-                        tipoSelecionado = 'elogio';
-                        _controller.clear();
-                      });
-                    },
-                    texto: 'Elogio',
+                  _CheckBoxTile(
+                    value: ampliacaoCameras,
+                    onChanged: (val) => setState(() => ampliacaoCameras = val!),
+                    text: 'Instalação/Ampliação de Câmeras',
                     azul: azul,
                     laranja: laranja,
                   ),
                   const SizedBox(height: 16),
-                  _ManifestacaoRadioCheckTile(
-                    selecionado: tipoSelecionado == 'reclamacao',
-                    onTap: () {
-                      setState(() {
-                        tipoSelecionado = 'reclamacao';
-                        _controller.clear();
-                      });
-                    },
-                    texto: 'Reclamação',
+                  _CheckBoxTile(
+                    value: ampliacaoAlarme,
+                    onChanged: (val) => setState(() => ampliacaoAlarme = val!),
+                    text: 'Instalação/Ampliação do Alarme',
                     azul: azul,
                     laranja: laranja,
                   ),
+                  const SizedBox(height: 16),
+                  _CheckBoxTile(
+                    value: outros,
+                    onChanged: (val) => setState(() => outros = val!),
+                    text: 'Outros',
+                    azul: azul,
+                    laranja: laranja,
+                  ),
+                  if (outros) ...[
+                    const SizedBox(height: 12),
+                    Stack(
+                      children: [
+                        TextField(
+                          controller: _controllerOutros,
+                          minLines: 2,
+                          maxLines: null, // cresce conforme digita
+                          keyboardType: TextInputType.multiline,
+                          style: TextStyle(color: azul, fontSize: 16),
+                          decoration: InputDecoration(
+                            hintText: 'Descreva outro tipo de solicitação...',
+                            hintStyle: TextStyle(color: azul),
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13),
+                              borderSide: BorderSide(color: laranja, width: 2),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13),
+                              borderSide: BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13),
+                              borderSide: BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2.1,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.fromLTRB(24, 14, 24, 14),
+                          ),
+                          onChanged: (_) => setState(() {}), // 🔑 ESSA LINHA
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Deixe sua mensagem para a Protepac',
-                      style: TextStyle(
-                        color: laranja,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 6),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Descreva sua necessidade de Orçamento',
+                        style: TextStyle(
+                          color: laranja,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      textAlign: TextAlign.left,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -159,11 +202,10 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
                         maxLines: 16,
                         maxLength: maxLength,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        enabled: tipoSelecionado != null,
                         style: TextStyle(color: azul, fontSize: 16),
                         decoration: InputDecoration(
-                          hintText: hint,
-                          hintStyle: TextStyle(color: Color(0xFF181883)),
+                          hintText: 'Digite aqui...',
+                          hintStyle: TextStyle(color: azul),
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(
@@ -231,7 +273,7 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
                             ),
                             elevation: 0,
                           ),
-                          onPressed: _formValido ? _enviar : null,
+                          onPressed: formValido ? _enviar : null,
                           child: const Text('Enviar'),
                         ),
                       ),
@@ -248,73 +290,46 @@ class _NovoElogioReclamacaoPageState extends State<NovoElogioReclamacaoPage> {
   }
 }
 
-class _ManifestacaoRadioCheckTile extends StatelessWidget {
-  final bool selecionado;
-  final VoidCallback onTap;
-  final String texto;
+class _CheckBoxTile extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+  final String text;
   final Color azul;
   final Color laranja;
 
-  const _ManifestacaoRadioCheckTile({
-    required this.selecionado,
-    required this.onTap,
-    required this.texto,
+  const _CheckBoxTile({
+    required this.value,
+    required this.onChanged,
+    required this.text,
     required this.azul,
     required this.laranja,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(color: laranja, width: 2),
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Container(
-          height: 52,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: laranja, // Sempre amarela
-              width: 2, // Fino igual ao exemplo 2
-            ),
-            borderRadius: BorderRadius.circular(8), // Cantos menos arredondados
-            color: Colors.white,
-          ),
-          child: Row(
-            children: [
-              SizedBox(width: 15),
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: selecionado
-                        ? laranja
-                        : Color(
-                            0xFF47465A,
-                          ), // cinza escuro só na caixinha // Sempre amarela
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(2),
-                  color: selecionado ? laranja : Colors.white,
-                ),
-                child: selecionado
-                    ? Icon(Icons.check, color: azul, size: 18)
-                    : null,
-              ),
-              SizedBox(width: 15),
-              Text(
-                texto,
-                style: TextStyle(
-                  color: azul,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ],
+        color: Colors.white,
+      ),
+      child: CheckboxListTile(
+        value: value,
+        onChanged: onChanged,
+        title: Text(
+          text,
+          style: TextStyle(
+            color: azul,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
+        activeColor: laranja,
+        checkColor: azul,
+        controlAffinity: ListTileControlAffinity.leading,
+        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

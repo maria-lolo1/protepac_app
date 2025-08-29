@@ -1,5 +1,3 @@
-// lib/widgets/modal_mensagem_pos_envio.dart
-
 import 'package:flutter/material.dart';
 
 enum MensagemPosEnvioTipo { sucesso, erro, faltando }
@@ -19,18 +17,22 @@ class ModalMensagemPosEnvio extends StatelessWidget {
     this.onProsseguir,
     this.onTentarNovamente,
     this.onVoltar,
-    this.mensagemCustomizada, // <-- novo parâmetro
+    this.mensagemCustomizada,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String mensagem = '';
-    final azul = const Color(0xFF181883);
-    final laranja = const Color(0xFFFFA500);
+    final theme = Theme.of(context);
+    final primary =
+        theme.colorScheme.primary; // azul no claro, laranja no escuro
+    final secondary =
+        theme.colorScheme.secondary; // laranja no claro, amarelo no escuro
+    final background =
+        theme.dialogBackgroundColor; // branco/claro ou preto/escuro
 
+    String mensagem = '';
     Widget botoesWidget;
 
-    // Layout responsivo para os botões de sucesso
     if (tipo == MensagemPosEnvioTipo.sucesso) {
       mensagem =
           mensagemCustomizada ??
@@ -38,42 +40,40 @@ class ModalMensagemPosEnvio extends StatelessWidget {
 
       botoesWidget = LayoutBuilder(
         builder: (context, constraints) {
-          // Em telas pequenas, empilha um embaixo do outro
           if (constraints.maxWidth < 380) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _ModalButton(
                   texto: 'Ver Manifestações',
-                  corBorda: azul,
-                  corTexto: laranja,
+                  corBorda: primary,
+                  corTexto: secondary,
                   onPressed: onVerManif,
                 ),
                 const SizedBox(height: 12),
                 _ModalButton(
                   texto: 'Prosseguir',
-                  corBorda: laranja,
-                  corTexto: azul,
+                  corBorda: secondary,
+                  corTexto: primary,
                   onPressed: onProsseguir,
                 ),
               ],
             );
           } else {
-            // Em telas grandes, botões lado a lado
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _ModalButton(
                   texto: 'Ver Manifestações',
-                  corBorda: azul,
-                  corTexto: laranja,
+                  corBorda: primary,
+                  corTexto: secondary,
                   onPressed: onVerManif,
                 ),
                 const SizedBox(width: 12),
                 _ModalButton(
                   texto: 'Prosseguir',
-                  corBorda: laranja,
-                  corTexto: azul,
+                  corBorda: secondary,
+                  corTexto: primary,
                   onPressed: onProsseguir,
                 ),
               ],
@@ -83,16 +83,13 @@ class ModalMensagemPosEnvio extends StatelessWidget {
       );
     } else if (tipo == MensagemPosEnvioTipo.erro) {
       mensagem = 'Erro ao enviar sua mensagem!';
-      botoesWidget = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _ModalButton(
-            texto: 'Tentar Novamente',
-            corBorda: laranja,
-            corTexto: azul,
-            onPressed: onTentarNovamente,
-          ),
-        ],
+      botoesWidget = Center(
+        child: _ModalButton(
+          texto: 'Tentar Novamente',
+          corBorda: secondary,
+          corTexto: primary,
+          onPressed: onTentarNovamente,
+        ),
       );
     } else {
       mensagem = 'Preencher os dados obrigatórios!';
@@ -100,15 +97,15 @@ class ModalMensagemPosEnvio extends StatelessWidget {
         width: double.infinity,
         child: _ModalButton(
           texto: 'Voltar',
-          corBorda: laranja,
-          corTexto: azul,
+          corBorda: secondary,
+          corTexto: primary,
           onPressed: onVoltar,
         ),
       );
     }
 
     return Dialog(
-      backgroundColor: Colors.white,
+      backgroundColor: background,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 22),
@@ -118,7 +115,7 @@ class ModalMensagemPosEnvio extends StatelessWidget {
             Text(
               mensagem,
               style: TextStyle(
-                color: azul,
+                color: primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -154,7 +151,7 @@ class _ModalButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).dialogBackgroundColor,
       ),
       onPressed: onPressed,
       child: Text(

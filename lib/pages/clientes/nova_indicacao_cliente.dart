@@ -1,7 +1,7 @@
 // lib/pages/nova_indicacao_cliente.dart
 
 import 'package:flutter/material.dart';
-import '../widgets/modal_mensagem_pos_envio.dart';
+import '../../widgets/modal_mensagem_pos_envio.dart';
 
 class NovaIndicacaoClientePage extends StatefulWidget {
   const NovaIndicacaoClientePage({Key? key}) : super(key: key);
