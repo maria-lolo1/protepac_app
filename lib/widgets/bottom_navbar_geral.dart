@@ -1,4 +1,3 @@
-// lib/widgets/custom_bottom_navbar_geral.dart
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBarGeral extends StatelessWidget {
@@ -13,17 +12,18 @@ class CustomBottomNavBarGeral extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    const azul = Color(0xFF181883);
+    const unselectedColor = Colors.grey;
 
     return Container(
       height: 56,
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+      decoration: const BoxDecoration(
+        color: Colors.white, // ✅ sempre branco
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 2,
-            offset: const Offset(0, -2),
+            offset: Offset(0, -2),
           ),
         ],
       ),
@@ -31,21 +31,18 @@ class CustomBottomNavBarGeral extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNavItem(
-            context: context,
             icon: Icons.home_rounded,
             label: 'Home',
             selected: selectedIndex == 0,
             onTap: () => onTap(0),
           ),
           _buildNavItem(
-            context: context,
             icon: Icons.person_add_alt_1,
             label: 'Adicionar',
             selected: selectedIndex == 1,
             onTap: () => onTap(1),
           ),
           _buildNavItem(
-            context: context,
             icon: Icons.person_rounded,
             label: 'Perfil',
             selected: selectedIndex == 2,
@@ -57,15 +54,13 @@ class CustomBottomNavBarGeral extends StatelessWidget {
   }
 
   Widget _buildNavItem({
-    required BuildContext context,
     required IconData icon,
     required String label,
     required bool selected,
     required VoidCallback onTap,
   }) {
-    final theme = Theme.of(context);
-    final selectedColor = theme.colorScheme.primary;
-    final unselectedColor = Colors.grey;
+    const azul = Color(0xFF181883);
+    const unselectedColor = Colors.grey;
 
     return GestureDetector(
       onTap: onTap,
@@ -78,7 +73,7 @@ class CustomBottomNavBarGeral extends StatelessWidget {
             Icon(
               icon,
               size: 24,
-              color: selected ? selectedColor : unselectedColor,
+              color: selected ? azul : unselectedColor, // ✅ fixado
             ),
             const SizedBox(height: 2),
             Text(
@@ -86,7 +81,7 @@ class CustomBottomNavBarGeral extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                color: selected ? selectedColor : unselectedColor,
+                color: selected ? azul : unselectedColor, // ✅ fixado
               ),
             ),
           ],

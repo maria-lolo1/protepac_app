@@ -22,13 +22,8 @@ class ModalMensagemPosEnvio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primary =
-        theme.colorScheme.primary; // azul no claro, laranja no escuro
-    final secondary =
-        theme.colorScheme.secondary; // laranja no claro, amarelo no escuro
-    final background =
-        theme.dialogBackgroundColor; // branco/claro ou preto/escuro
+    const azul = Color(0xFF181883);
+    const laranja = Color(0xFFFF9900);
 
     String mensagem = '';
     Widget botoesWidget;
@@ -46,15 +41,15 @@ class ModalMensagemPosEnvio extends StatelessWidget {
               children: [
                 _ModalButton(
                   texto: 'Ver Manifestações',
-                  corBorda: primary,
-                  corTexto: secondary,
+                  corBorda: azul,
+                  corTexto: laranja,
                   onPressed: onVerManif,
                 ),
                 const SizedBox(height: 12),
                 _ModalButton(
                   texto: 'Prosseguir',
-                  corBorda: secondary,
-                  corTexto: primary,
+                  corBorda: laranja,
+                  corTexto: azul,
                   onPressed: onProsseguir,
                 ),
               ],
@@ -65,15 +60,15 @@ class ModalMensagemPosEnvio extends StatelessWidget {
               children: [
                 _ModalButton(
                   texto: 'Ver Manifestações',
-                  corBorda: primary,
-                  corTexto: secondary,
+                  corBorda: azul,
+                  corTexto: laranja,
                   onPressed: onVerManif,
                 ),
                 const SizedBox(width: 12),
                 _ModalButton(
                   texto: 'Prosseguir',
-                  corBorda: secondary,
-                  corTexto: primary,
+                  corBorda: laranja,
+                  corTexto: azul,
                   onPressed: onProsseguir,
                 ),
               ],
@@ -86,8 +81,8 @@ class ModalMensagemPosEnvio extends StatelessWidget {
       botoesWidget = Center(
         child: _ModalButton(
           texto: 'Tentar Novamente',
-          corBorda: secondary,
-          corTexto: primary,
+          corBorda: laranja,
+          corTexto: azul,
           onPressed: onTentarNovamente,
         ),
       );
@@ -97,15 +92,15 @@ class ModalMensagemPosEnvio extends StatelessWidget {
         width: double.infinity,
         child: _ModalButton(
           texto: 'Voltar',
-          corBorda: secondary,
-          corTexto: primary,
+          corBorda: laranja,
+          corTexto: azul,
           onPressed: onVoltar,
         ),
       );
     }
 
     return Dialog(
-      backgroundColor: background,
+      backgroundColor: Colors.white, // ✅ sempre branco
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 22),
@@ -114,8 +109,8 @@ class ModalMensagemPosEnvio extends StatelessWidget {
           children: [
             Text(
               mensagem,
-              style: TextStyle(
-                color: primary,
+              style: const TextStyle(
+                color: azul,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -151,7 +146,7 @@ class _ModalButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        backgroundColor: Colors.white, // ✅ sempre branco
       ),
       onPressed: onPressed,
       child: Text(

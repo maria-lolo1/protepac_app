@@ -27,7 +27,7 @@ import 'pages/adm/indicacao_cliente_adm.dart';
 import 'pages/adm/solicitacao_orcamento_adm.dart';
 import 'pages/adm/alertas_protepac_adm.dart';
 import 'pages/adm/manifestacoes_geral.dart';
-import 'pages/adm/elogios_adm.dart'; // 👈 ADICIONADO
+import 'pages/adm/elogios_adm.dart';
 import 'pages/adm/perfil_adm.dart';
 import 'pages/adm/adicionar_adm.dart';
 
@@ -39,28 +39,16 @@ class ProtepacApp extends StatelessWidget {
     return MaterialApp(
       title: 'Protepac',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system, // Usa o tema do sistema (claro/escuro)
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
         primaryColor: const Color(0xFF181883), // azul
-        colorScheme: ColorScheme.light(
-          primary: const Color(0xFF181883), // azul
-          secondary: const Color(0xFFFF9900), // laranja
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF181883), // azul
+          secondary: Color(0xFFFF9900), // laranja
           surface: Colors.white,
         ),
         textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.black, // fundo preto
-        primaryColor: const Color(0xFFFF9900), // laranja no lugar do azul
-        colorScheme: ColorScheme.dark(
-          primary: const Color(0xFFFF9900), // laranja
-          secondary: const Color(0xFFFFD700), // amarelo mantido
-          surface: Colors.black,
-        ),
-        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
       ),
       initialRoute: '/login',
       onGenerateRoute: (settings) {
@@ -116,7 +104,7 @@ class ProtepacApp extends StatelessWidget {
             );
           case '/alertas_protepac_adm':
             return MaterialPageRoute(builder: (_) => AlertasProtepacAdmPage());
-          case '/elogios_adm': // 👈 NOVA ROTA
+          case '/elogios_adm':
             return MaterialPageRoute(builder: (_) => ElogiosAdmPage());
           case '/manifestacoes_geral':
             return MaterialPageRoute(builder: (_) => ManifestacoesGeralPage());
